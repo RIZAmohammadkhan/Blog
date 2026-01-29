@@ -3,7 +3,7 @@ import {
   Search,
   FileCode,
   GitBranch,
-  Play,
+
   Layers,
   Settings,
   ChevronRight,
@@ -74,7 +74,7 @@ function App() {
   // Sidebar state
   const [activeSidebarPanel, setActiveSidebarPanel] = useState<SidebarPanel>('explorer');
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const [isFocusMode, setIsFocusMode] = useState(false);
+
 
   // Font settings
   const [fontSettings, setFontSettings] = useState<FontSettings>(() => {
@@ -145,11 +145,7 @@ function App() {
     setOpenTabs(prev => [...prev, newTab]);
     setActiveTabId(article.id);
 
-    // Exit focus mode when opening article
-    if (isFocusMode) {
-      setIsFocusMode(false);
-      setIsSidebarVisible(true);
-    }
+
   };
 
   // Open article by ID (from folder tree)
@@ -180,18 +176,7 @@ function App() {
     });
   };
 
-  // Toggle focus mode (Play button)
-  const toggleFocusMode = () => {
-    setIsFocusMode(prev => {
-      if (!prev) {
-        setIsSidebarVisible(false);
-        return true;
-      } else {
-        setIsSidebarVisible(true);
-        return false;
-      }
-    });
-  };
+
 
   // Get active article
   const activeArticle = activeTabId !== null
@@ -266,8 +251,12 @@ function App() {
         <div className="w-12 bg-[#333333] flex flex-col items-center py-2 gap-1">
           <div
             onClick={() => {
-              setActiveSidebarPanel('explorer');
-              setIsSidebarVisible(true);
+              if (activeSidebarPanel === 'explorer' && isSidebarVisible) {
+                setIsSidebarVisible(false);
+              } else {
+                setActiveSidebarPanel('explorer');
+                setIsSidebarVisible(true);
+              }
             }}
             className={`w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'explorer' && isSidebarVisible
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
@@ -297,16 +286,7 @@ function App() {
           >
             <GitBranch size={24} />
           </div>
-          <div
-            onClick={toggleFocusMode}
-            className={`w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ${isFocusMode
-              ? 'text-[#4ec9b0] border-l-2 border-[#4ec9b0] bg-[#252526]'
-              : 'text-[#858585] hover:text-[#cccccc]'
-              }`}
-            title="Focus Mode (Hide Sidebar)"
-          >
-            <Play size={24} />
-          </div>
+
           <div
             onClick={() => {
               setActiveSidebarPanel('resources');
