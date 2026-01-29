@@ -1,6 +1,6 @@
 ---
 title: Why Windows?
-subtitlle: Short answer don't use windows
+subtitle: Short answer don't use windows
 readTime: 10 min
 date: 2026-01-29
 tags: why-windows, windows-sucks, use-linux

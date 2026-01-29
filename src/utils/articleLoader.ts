@@ -91,7 +91,7 @@ export async function loadArticles(): Promise<{ articles: Article[]; folderTree:
             id: articleId++,
             title: filename,
             displayTitle: frontmatter.title || filenameToDisplayTitle(filename),
-            excerpt: body.split('\n').find(line => line.trim() && !line.startsWith('#'))?.slice(0, 150) || '',
+            excerpt: frontmatter.subtitle || frontmatter.description || frontmatter.excerpt || body.split('\n').find(line => line.trim() && !line.startsWith('#'))?.slice(0, 150) || '',
             content: body,
             category: category,
             readTime: frontmatter.readTime || '5 min',
