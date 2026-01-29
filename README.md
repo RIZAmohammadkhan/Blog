@@ -1,128 +1,112 @@
-# Minimal Dev Blog (Vite + React + TypeScript)
+# Rixa's Guide (Dev Blog)
 
-A small personal blog scaffolded with Vite, React, and TypeScript. Articles are plain Markdown files under `src/articles` and the UI is in `src/components`.
+A personal developer blog and documentation site styled to look and feel like a modern IDE (VS Code). Built with React, Vite, and TypeScript.
 
-Getting started
+## ✨ Features
 
-- Install dependencies:
+- **IDE Interface**: A fully functional UI with a file explorer, tab system, activity bar, and status bar.
+- **Markdown Content**: Articles are written in Markdown and dynamically loaded from the file system using Vite's glob imports.
+- **Command Palette**: Press `Ctrl+K` (or `Cmd+K`) to search articles instantly using Fuse.js.
+- **Syntax Highlighting**: Code blocks in articles feature proper syntax coloring.
+- **Dynamic File Tree**: The sidebar automatically generates a folder structure based on your `src/articles` directory.
+- **Customizable**: Settings panel to adjust font family and weight.
+- **Responsive**: Adapts to mobile views with a drawer-based navigation.
 
-```bash
-npm install
+## 🛠️ Tech Stack
+
+- **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Language**: TypeScript
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix UI)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Search**: [Fuse.js](https://www.fusejs.io/)
+- **Routing**: React Router DOM
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/rixas-guide.git
+   cd rixas-guide
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open `http://localhost:5173` in your browser.
+
+## 📝 Adding New Articles
+
+You do not need to write any React code to add content. The application uses a dynamic loader to find files.
+
+1. Create a new `.md` file in `src/articles/[category]/`.
+   *Example: `src/articles/react/hooks-guide.md`*
+
+2. Add the required Frontmatter at the top of the file:
+
+   ```markdown
+   ---
+   title: Complete Guide to Hooks
+   readTime: 8 min
+   date: 2026-01-30
+   tags: react, hooks, frontend
+   image: /images/react-cover.jpg
+   ---
+
+   ## Your Content Here
+   Markdown content goes here...
+   ```
+
+3. **That's it!** The application will automatically:
+   - Detect the file.
+   - Create the category folder in the "Explorer" sidebar if it doesn't exist.
+   - Index the content for the search modal.
+   - Determine the file icon color based on the extension (or default to Markdown).
+
+## 📂 Project Structure
+
+```
+src/
+├── articles/       # Markdown content files organized by folders
+├── components/     # React UI components
+│   ├── ui/         # shadcn/ui primitives
+│   ├── ArticleViewer.tsx  # Renders markdown content
+│   ├── FolderTree.tsx     # Recursive sidebar file explorer
+│   ├── SearchModal.tsx    # Fuse.js powered command palette
+│   └── TabBar.tsx         # IDE-like tab management
+├── utils/          # Helper functions (article loader, markdown parser)
+├── App.tsx         # Main layout and state management
+└── types.ts        # TypeScript interfaces
 ```
 
-- Run the dev server:
+## ⌨️ Shortcuts
 
-```bash
-npm run dev
-```
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + K` / `Cmd + K` | Open Search / Command Palette |
+| `Ctrl + B` / `Cmd + B` | Toggle Sidebar |
+| `Esc` | Close Modals |
 
-- Build for production:
+## 🎨 Customization
 
-```bash
-npm run build
-```
+- **Theme Colors**: Modified in `src/index.css` via CSS variables.
+- **Font Settings**: Defaults defined in `src/types.ts`.
+- **UI Components**: Built using Tailwind CSS in `src/components/ui`.
 
-Available scripts (from `package.json`)
+## 📄 License
 
-- `dev` — start Vite dev server
-- `build` — build production files
-- `preview` — locally preview production build
-
-Project layout
-
-- `src/` — application source
-  - `articles/` — markdown content used by the site
-  - `components/` — React UI components
-  - `main.tsx`, `App.tsx` — app entry
-
-Notes
-
-- Add new posts as Markdown files in `src/articles`.
-- Environment variables: create a `.env` file for local secrets (excluded from git).
-
-Want me to commit these files or run `npm install` now? 
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    # Blog (Vite + React + TypeScript)
-
-    A small personal blog built with Vite, React and TypeScript. Includes a simple file-based article loader and a lightweight UI components library.
-
-    ## Features
-
-    - Vite dev server with HMR
-    - TypeScript and ESLint configuration
-    - File-based article content under `src/articles`
-
-    ## Prerequisites
-
-    - Node.js 18+ (or an active LTS) and npm, yarn or pnpm
-
-    ## Setup
-
-    Install dependencies:
-
-    ```bash
-    npm install
-    # or
-    yarn install
-    # or
-    pnpm install
-    ```
-
-    ## Development
-
-    Run the dev server:
-
-    ```bash
-    npm run dev
-    ```
-
-    Open http://localhost:5173 in your browser.
-
-    ## Build
-
-    Create a production build:
-
-    ```bash
-    npm run build
-    ```
-
-    Preview the production build locally:
-
-    ```bash
-    npm run preview
-    ```
-
-    ## Project layout (key paths)
-
-    - `src/` — application source
-    - `src/articles/` — markdown articles
-    - `src/components/` — React components and UI primitives
-    - `public/` — static assets
-
-    ## Contributing
-
-    Contributions are welcome. Open an issue or a PR with a clear description of changes.
-
-    ## License
-
-    This project is provided "as-is". Add a license file if you want to apply one.
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
