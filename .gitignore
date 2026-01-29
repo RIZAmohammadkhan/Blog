@@ -47,3 +47,4 @@ coverage-final.json
 # Misc
 .cache/
 *.log
+bin.bin
