@@ -40,7 +40,7 @@ function WelcomeContent() {
         <div className="text-6xl mb-6">📚</div>
         <h1 className="text-2xl font-bold text-[#dcdcaa] mb-4">Welcome to Rixa's Guide</h1>
         <p className="text-[#858585] mb-6">
-          Browse the folders on the left or use search to find articles. For Beginners I would recommend starting from the Hello-devs.md in getting_started folder.
+          Browse the folders on the left or use search to find articles. <br></br> For Beginners I would recommend starting from the Hello-devs.md in getting_started folder.
         </p>
         <div className="flex flex-col gap-2 text-sm text-[#6e6e6e]">
           <div className="flex items-center justify-center gap-2">
@@ -109,7 +109,7 @@ function App() {
       // Ctrl/Cmd + K for search
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
-        setIsSearchOpen(true);
+        setIsSearchOpen(prev => !prev);
       }
       // Escape to close modals
       if (e.key === 'Escape') {
