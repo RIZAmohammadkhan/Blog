@@ -1,4 +1,4 @@
-import { Github, Twitter, Mail, Heart, ExternalLink } from 'lucide-react';
+import { Github, Twitter, Mail, Heart, ExternalLink, Linkedin } from 'lucide-react';
 
 interface AboutPanelProps {
     onClose?: () => void;
@@ -13,7 +13,7 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
             <div className="bg-[#1e1e1e] rounded-lg p-4 mb-4 border border-[#3e3e42]">
                 <div className="flex items-center gap-3 mb-3">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#007acc] to-[#4ec9b0] flex items-center justify-center text-white font-bold text-lg">
-                        R
+                        RX
                     </div>
                     <div>
                         <h3 className="text-[#dcdcaa] font-semibold">Rixa</h3>
@@ -43,6 +43,7 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
                 <p className="text-xs text-[#858585] leading-relaxed">
                     Creating practical, no-fluff guides that respect your time.
                     Every article is designed to be actionable and immediately useful.
+                    Even better than AI.
                 </p>
             </div>
 
@@ -51,7 +52,7 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
                 <h4 className="text-sm text-[#dcdcaa] mb-2">Connect</h4>
                 <div className="space-y-2">
                     <a
-                        href="https://github.com"
+                        href="https://github.com/rizamohammadkhan"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-[#9cdcfe] hover:text-[#dcdcaa] transition-colors"
@@ -61,7 +62,7 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
                         <ExternalLink size={10} className="ml-auto text-[#6e6e6e]" />
                     </a>
                     <a
-                        href="https://twitter.com"
+                        href="https://x.com/_RizaMohammad"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-[#9cdcfe] hover:text-[#dcdcaa] transition-colors"
@@ -71,7 +72,17 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
                         <ExternalLink size={10} className="ml-auto text-[#6e6e6e]" />
                     </a>
                     <a
-                        href="mailto:rixa@guide.dev"
+                        href="https://www.linkedin.com/in/rizamkhan"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-[#9cdcfe] hover:text-[#dcdcaa] transition-colors"
+                    >
+                        <Linkedin size={14} />
+                        <span>LinkedIn</span>
+                        <ExternalLink size={10} className="ml-auto text-[#6e6e6e]" />
+                    </a>
+                    <a
+                        href="mailto:rizamohammad.work@gmail.com"
                         className="flex items-center gap-2 text-sm text-[#9cdcfe] hover:text-[#dcdcaa] transition-colors"
                     >
                         <Mail size={14} />
