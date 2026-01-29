@@ -1,0 +1,226 @@
+/* Terminal Theme App Styles */
+
+/* Ensure smooth scrolling behavior */
+html {
+  scroll-behavior: auto;
+}
+
+/* Custom selection for code editor feel */
+::selection {
+  background-color: #264f78;
+  color: #d4d4d4;
+}
+
+/* Ensure pinned sections stack correctly */
+.section-pinned {
+  will-change: transform;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Terminal card effects */
+.terminal-card {
+  will-change: transform, border-color, box-shadow;
+}
+
+/* Image loading optimization */
+img {
+  loading: lazy;
+}
+
+/* Scrollbar for webkit browsers - VS Code style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+}
+
+::-webkit-scrollbar-corner {
+  background: #1e1e1e;
+}
+
+/* Terminal cursor animation */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.2em;
+  background: #aeafad;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Typing cursor for hero */
+.typing-cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+
+/* Code syntax highlighting classes */
+.syntax-keyword {
+  color: #569cd6;
+}
+
+.syntax-string {
+  color: #ce9178;
+}
+
+.syntax-function {
+  color: #dcdcaa;
+}
+
+.syntax-comment {
+  color: #6a9955;
+}
+
+.syntax-number {
+  color: #b5cea8;
+}
+
+.syntax-variable {
+  color: #9cdcfe;
+}
+
+.syntax-operator {
+  color: #d4d4d4;
+}
+
+.syntax-punctuation {
+  color: #d4d4d4;
+}
+
+/* Hover effects for interactive elements */
+.terminal-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.terminal-card:hover {
+  border-color: #007acc;
+  box-shadow: 0 0 20px rgba(0, 122, 204, 0.15);
+}
+
+/* File tab hover */
+.file-tab {
+  transition: all 0.15s ease;
+}
+
+/* Button transitions */
+.btn-terminal {
+  transition: all 0.15s ease;
+}
+
+/* Filter chip transitions */
+.filter-chip {
+  transition: all 0.15s ease;
+}
+
+/* Input focus states */
+input:focus {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Link hover effects */
+a {
+  transition: color 0.15s ease;
+}
+
+/* Activity bar item hover */
+.activity-bar-item {
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+/* Sidebar item hover */
+.sidebar-item {
+  transition: background-color 0.15s ease;
+}
+
+/* Status bar item hover */
+.status-bar-item {
+  transition: background-color 0.15s ease;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .section-pinned {
+    height: auto;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  /* Stack cards vertically on mobile */
+  .section-pinned>div {
+    flex-direction: column !important;
+  }
+
+  .terminal-card {
+    width: 90% !important;
+    height: auto !important;
+    margin: 10px auto;
+  }
+
+  /* Hide sidebar on mobile */
+  .w-64.bg-\[\#252526\] {
+    display: none;
+  }
+
+  /* Adjust activity bar */
+  .w-12.bg-\[\#333333\] {
+    width: 40px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cursor,
+  .typing-cursor::after {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* Print styles */
+@media print {
+  .section-pinned {
+    height: auto;
+    page-break-inside: avoid;
+  }
+
+  .w-12.bg-\[\#333333\],
+  .w-64.bg-\[\#252526\],
+  .h-8.bg-\[\#3c3c3c\],
+  .h-6.bg-\[\#007acc\] {
+    display: none;
+  }
+}
