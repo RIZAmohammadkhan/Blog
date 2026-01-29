@@ -42,9 +42,7 @@ const resources = [
 export default function ResourcesPanel({ onClose: _onClose }: ResourcesPanelProps) {
     return (
         <div className="flex-1 overflow-y-auto py-4 px-3">
-            <div className="text-xs font-bold text-[#bbbbbb] uppercase tracking-wide mb-4">
-                Resources
-            </div>
+
 
             <p className="text-xs text-[#858585] mb-4">
                 Curated links to help you grow as a developer.

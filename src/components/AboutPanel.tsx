@@ -7,9 +7,7 @@ interface AboutPanelProps {
 export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
     return (
         <div className="flex-1 overflow-y-auto py-4 px-3">
-            <div className="text-xs font-bold text-[#bbbbbb] uppercase tracking-wide mb-4">
-                About
-            </div>
+
 
             {/* Profile */}
             <div className="bg-[#1e1e1e] rounded-lg p-4 mb-4 border border-[#3e3e42]">
