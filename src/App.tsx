@@ -41,6 +41,7 @@ function WelcomeContent() {
         <h1 className="text-2xl font-bold text-[#dcdcaa] mb-4">Welcome to Rixa's Guide</h1>
         <p className="text-[#858585] mb-6">
           Clear reads for busy builders. Browse the folders on the left or use search to find articles.
+          For Beginners I would recommend starting from the 01-Beginner folder.
         </p>
         <div className="flex flex-col gap-2 text-sm text-[#6e6e6e]">
           <div className="flex items-center justify-center gap-2">
