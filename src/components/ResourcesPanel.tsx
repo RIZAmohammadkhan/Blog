@@ -1,4 +1,4 @@
-import { ExternalLink, BookOpen, Video, Newspaper, Podcast, Code2 } from 'lucide-react';
+import { ExternalLink, Terminal, Monitor, Bot, Code2 } from 'lucide-react';
 
 interface ResourcesPanelProps {
     onClose?: () => void;
@@ -6,35 +6,28 @@ interface ResourcesPanelProps {
 
 const resources = [
     {
-        category: 'Learning',
+        category: 'Operating System',
         items: [
-            { name: 'freeCodeCamp', url: 'https://freecodecamp.org', icon: Code2 },
-            { name: 'The Odin Project', url: 'https://theodinproject.com', icon: BookOpen },
-            { name: 'Fireship.io', url: 'https://fireship.io', icon: Video },
+            { name: 'Omarchy', url: 'https://omacom.io', icon: Monitor },
         ]
     },
     {
-        category: 'News & Blogs',
+        category: 'Code Editor',
         items: [
-            { name: 'Hacker News', url: 'https://news.ycombinator.com', icon: Newspaper },
-            { name: 'DEV Community', url: 'https://dev.to', icon: Newspaper },
-            { name: 'CSS-Tricks', url: 'https://css-tricks.com', icon: Newspaper },
+            { name: 'Zed', url: 'https://zed.dev', icon: Code2 },
         ]
     },
     {
-        category: 'Podcasts',
+        category: 'Terminal',
         items: [
-            { name: 'Syntax.fm', url: 'https://syntax.fm', icon: Podcast },
-            { name: 'Changelog', url: 'https://changelog.com', icon: Podcast },
-            { name: 'Software Engineering Daily', url: 'https://softwareengineeringdaily.com', icon: Podcast },
+            { name: 'Kitty', url: 'https://sw.kovidgoyal.net/kitty/', icon: Terminal },
+            { name: 'Starship', url: 'https://starship.rs', icon: Terminal },
         ]
     },
     {
-        category: 'Tools',
+        category: 'AI Agent',
         items: [
-            { name: 'Can I Use', url: 'https://caniuse.com', icon: Code2 },
-            { name: 'Bundlephobia', url: 'https://bundlephobia.com', icon: Code2 },
-            { name: 'Ray.so', url: 'https://ray.so', icon: Code2 },
+            { name: 'GitHub Copilot', url: 'https://github.com/features/copilot', icon: Bot },
         ]
     }
 ];
@@ -45,7 +38,7 @@ export default function ResourcesPanel({ onClose: _onClose }: ResourcesPanelProp
 
 
             <p className="text-xs text-[#858585] mb-4">
-                Curated links to help you grow as a developer.
+                My current development environment and tech stack.
             </p>
 
             {resources.map(section => (
@@ -74,7 +67,7 @@ export default function ResourcesPanel({ onClose: _onClose }: ResourcesPanelProp
             {/* Add Resource Request */}
             <div className="mt-6 pt-4 border-t border-[#3e3e42]">
                 <p className="text-xs text-[#6e6e6e] text-center">
-                    Know a great resource? <br />
+                    Know a great tool? <br />
                     <a href="mailto:rizamohammad.work@gmail.com" className="text-[#569cd6] hover:underline">
                         Let me know!
                     </a>
