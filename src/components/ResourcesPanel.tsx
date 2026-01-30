@@ -75,7 +75,7 @@ export default function ResourcesPanel({ onClose: _onClose }: ResourcesPanelProp
             <div className="mt-6 pt-4 border-t border-[#3e3e42]">
                 <p className="text-xs text-[#6e6e6e] text-center">
                     Know a great resource? <br />
-                    <a href="mailto:rixa@guide.dev" className="text-[#569cd6] hover:underline">
+                    <a href="mailto:rizamohammad.work@gmail.com" className="text-[#569cd6] hover:underline">
                         Let me know!
                     </a>
                 </p>
