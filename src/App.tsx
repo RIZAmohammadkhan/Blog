@@ -21,6 +21,8 @@ import SettingsPanel from './components/SettingsPanel';
 import AboutPanel from './components/AboutPanel';
 import ResourcesPanel from './components/ResourcesPanel';
 import { loadArticles } from './utils/articleLoader';
+import { useIsMobile } from './hooks/use-mobile';
+import { Sheet, SheetContent } from './components/ui/sheet';
 import {
   defaultFontSettings,
   type Tab,
@@ -36,7 +38,7 @@ type SidebarPanel = 'explorer' | 'about' | 'resources';
 function WelcomeContent() {
   return (
     <div className="flex-1 flex items-center justify-center bg-[#1e1e1e]">
-      <div className="text-center max-w-lg px-8">
+      <div className="text-center max-w-lg px-4 md:px-8">
         <div className="text-6xl mb-6">📚</div>
         <h1 className="text-2xl font-bold text-[#dcdcaa] mb-4">Welcome to Rixa's Guide</h1>
         <p className="text-[#858585] mb-6">
@@ -58,6 +60,8 @@ function WelcomeContent() {
 }
 
 function App() {
+  const isMobile = useIsMobile();
+
   // Article data - loaded dynamically
   const [articles, setArticles] = useState<Article[]>([]);
   const [folderTree, setFolderTree] = useState<FolderNode[]>([]);
@@ -74,6 +78,7 @@ function App() {
   // Sidebar state
   const [activeSidebarPanel, setActiveSidebarPanel] = useState<SidebarPanel>('explorer');
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
 
   // Font settings
@@ -156,6 +161,11 @@ function App() {
     }
   };
 
+  const openArticleByIdFromSidebar = (articleId: number) => {
+    openArticleById(articleId);
+    if (isMobile) setIsMobileSidebarOpen(false);
+  };
+
   // Close tab
   const closeTab = (tabId: number) => {
     setOpenTabs(prev => {
@@ -202,7 +212,7 @@ function App() {
               <FolderTree
                 folderTree={folderTree}
                 articles={articles}
-                onFileClick={openArticleById}
+                onFileClick={openArticleByIdFromSidebar}
               />
             )}
 
@@ -217,7 +227,10 @@ function App() {
                   {openTabs.map(tab => (
                     <div
                       key={tab.id}
-                      onClick={() => setActiveTabId(tab.id)}
+                      onClick={() => {
+                        setActiveTabId(tab.id);
+                        if (isMobile) setIsMobileSidebarOpen(false);
+                      }}
                       className={`flex items-center gap-2 px-2 py-1 text-sm cursor-pointer transition-colors ${tab.id === activeTabId
                         ? 'bg-[#37373d] text-[#cccccc]'
                         : 'text-[#cccccc] hover:bg-[#2a2d2e]'
@@ -243,89 +256,130 @@ function App() {
     }
   };
 
+  const sidebarTitle = getSidebarTitle();
+
+  const openSidebarPanel = (panel: SidebarPanel) => {
+    setActiveSidebarPanel(panel);
+    if (isMobile) {
+      setIsMobileSidebarOpen(true);
+      return;
+    }
+    setIsSidebarVisible(true);
+  };
+
+  const toggleExplorerPanel = () => {
+    if (isMobile) {
+      if (activeSidebarPanel === 'explorer' && isMobileSidebarOpen) {
+        setIsMobileSidebarOpen(false);
+      } else {
+        setActiveSidebarPanel('explorer');
+        setIsMobileSidebarOpen(true);
+      }
+      return;
+    }
+
+    if (activeSidebarPanel === 'explorer' && isSidebarVisible) {
+      setIsSidebarVisible(false);
+    } else {
+      setActiveSidebarPanel('explorer');
+      setIsSidebarVisible(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#1e1e1e] flex flex-col">
+    <div className="min-h-[100dvh] bg-[#1e1e1e] flex flex-col">
       {/* Main Layout - Full height without top bar */}
-      <div className="flex flex-1 h-screen">
+      <div className="flex flex-1 h-[100dvh]">
         {/* Activity Bar */}
-        <div className="w-12 bg-[#333333] flex flex-col items-center py-2 gap-1">
+        <div className="w-10 md:w-12 bg-[#333333] flex flex-col items-center py-2 gap-1">
           <div
-            onClick={() => {
-              if (activeSidebarPanel === 'explorer' && isSidebarVisible) {
-                setIsSidebarVisible(false);
-              } else {
-                setActiveSidebarPanel('explorer');
-                setIsSidebarVisible(true);
-              }
-            }}
-            className={`w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'explorer' && isSidebarVisible
+            onClick={toggleExplorerPanel}
+            className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'explorer' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
               : 'text-[#858585] hover:text-[#cccccc]'
               }`}
             title="Explorer"
           >
-            <FileCode size={24} />
+            <FileCode size={22} className="md:size-6" />
           </div>
           <div
             onClick={() => setIsSearchOpen(true)}
-            className="w-12 h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
             title="Search (Ctrl+K)"
           >
-            <Search size={24} />
+            <Search size={22} className="md:size-6" />
           </div>
           <div
-            onClick={() => {
-              setActiveSidebarPanel('about');
-              setIsSidebarVisible(true);
-            }}
-            className={`w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'about' && isSidebarVisible
+            onClick={() => openSidebarPanel('about')}
+            className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'about' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
               : 'text-[#858585] hover:text-[#cccccc]'
               }`}
             title="About"
           >
-            <GitBranch size={24} />
+            <GitBranch size={22} className="md:size-6" />
           </div>
 
           <div
-            onClick={() => {
-              setActiveSidebarPanel('resources');
-              setIsSidebarVisible(true);
-            }}
-            className={`w-12 h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'resources' && isSidebarVisible
+            onClick={() => openSidebarPanel('resources')}
+            className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'resources' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
               : 'text-[#858585] hover:text-[#cccccc]'
               }`}
             title="Resources"
           >
-            <Layers size={24} />
+            <Layers size={22} className="md:size-6" />
           </div>
           <div className="flex-1"></div>
           <div
-            onClick={() => setIsSidebarVisible(prev => !prev)}
-            className="w-12 h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            onClick={() => {
+              if (isMobile) {
+                setIsMobileSidebarOpen(prev => !prev);
+              } else {
+                setIsSidebarVisible(prev => !prev);
+              }
+            }}
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
             title="Toggle Sidebar (Ctrl+B)"
           >
-            {isSidebarVisible ? <PanelLeftClose size={24} /> : <PanelLeft size={24} />}
+            {(isMobile ? isMobileSidebarOpen : isSidebarVisible) ? <PanelLeftClose size={22} className="md:size-6" /> : <PanelLeft size={22} className="md:size-6" />}
           </div>
           <div
-            onClick={() => setIsSettingsOpen(true)}
-            className="w-12 h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            onClick={() => {
+              if (isMobile) setIsMobileSidebarOpen(false);
+              setIsSettingsOpen(true);
+            }}
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
             title="Settings"
           >
-            <Settings size={24} />
+            <Settings size={22} className="md:size-6" />
           </div>
         </div>
 
-        {/* Sidebar */}
+        {/* Desktop Sidebar */}
         {isSidebarVisible && (
-          <div className="w-64 bg-[#252526] border-r border-[#1e1e1e] flex flex-col">
+          <div className="hidden md:flex w-64 bg-[#252526] border-r border-[#1e1e1e] flex-col">
             <div className="h-9 flex items-center px-3 text-xs font-bold text-[#bbbbbb] uppercase tracking-wide">
-              {getSidebarTitle()}
+              {sidebarTitle}
             </div>
             {renderSidebarContent()}
           </div>
         )}
+
+        {/* Mobile Sidebar Drawer */}
+        <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
+          <SheetContent
+            side="left"
+            className="md:hidden bg-[#252526] border-[#1e1e1e] p-0 gap-0"
+          >
+            <div className="h-9 flex items-center px-3 text-xs font-bold text-[#bbbbbb] uppercase tracking-wide border-b border-[#1e1e1e]">
+              {sidebarTitle}
+            </div>
+            <div className="flex-1 min-h-0 flex flex-col">
+              {renderSidebarContent()}
+            </div>
+          </SheetContent>
+        </Sheet>
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-[#1e1e1e] overflow-hidden">
@@ -350,7 +404,7 @@ function App() {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="h-6 bg-[#007acc] flex items-center justify-between px-2 text-xs text-white">
+      <div className="hidden md:flex h-6 bg-[#007acc] items-center justify-between px-2 text-xs text-white">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1 cursor-pointer hover:bg-[#1a7dc4] px-1 rounded">
             <GitBranch size={12} />

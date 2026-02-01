@@ -25,7 +25,7 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
             }}
         >
             {/* Article Header */}
-            <div className="px-8 py-6 border-b border-[#3e3e42] bg-[#252526]">
+            <div className="px-4 md:px-8 py-5 md:py-6 border-b border-[#3e3e42] bg-[#252526]">
                 <div className="flex items-center gap-2 mb-3">
                     <FileCode
                         size={18}
@@ -34,13 +34,13 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
                     <span className="text-sm text-[#858585]">{article.title}</span>
                 </div>
 
-                <h1 className="text-3xl font-bold text-[#dcdcaa] mb-4">{article.displayTitle}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-[#dcdcaa] mb-4">{article.displayTitle}</h1>
 
                 {article.excerpt && (
                     <p className="text-[#9cdcfe] text-lg mb-4">{article.excerpt}</p>
                 )}
 
-                <div className="flex items-center gap-6 text-sm text-[#858585]">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[#858585]">
                     <span className="flex items-center gap-1">
                         <User size={14} /> Rixa
                     </span>
@@ -55,7 +55,7 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
                 </div>
 
                 {article.tags && article.tags.length > 0 && (
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex flex-wrap gap-2 mt-4">
                         {article.tags.map(tag => (
                             <span
                                 key={tag}
@@ -69,7 +69,7 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
             </div>
 
             {/* Article Content */}
-            <div className="px-8 py-6 max-w-4xl">
+            <div className="px-4 md:px-8 py-6 max-w-4xl mx-auto">
                 {article.content ? <MarkdownRenderer content={article.content} /> : (
                     <p className="text-[#6e6e6e] italic">Content coming soon...</p>
                 )}

@@ -40,10 +40,11 @@ export default function TabBar({ tabs, activeTabId, onTabClick, onTabClose }: Ta
                             e.stopPropagation();
                             onTabClose(tab.id);
                         }}
-                        className={`p-0.5 rounded transition-colors ${tab.id === activeTabId
+                        className={`p-1 rounded transition-colors ${tab.id === activeTabId
                                 ? 'hover:bg-[#3e3e42]'
-                                : 'opacity-0 group-hover:opacity-100 hover:bg-[#3e3e42]'
+                                : 'md:opacity-0 md:group-hover:opacity-100 hover:bg-[#3e3e42]'
                             }`}
+                        aria-label={`Close ${tab.title}`}
                     >
                         <X size={14} />
                     </button>

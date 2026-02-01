@@ -45,9 +45,10 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
         if (node.type === 'folder') {
             return (
                 <div key={node.id}>
-                    <div
+                    <button
+                        type="button"
                         onClick={() => toggleFolder(node.id)}
-                        className="flex items-center gap-1 py-1 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors"
+                        className="w-full flex items-center gap-1 py-2 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors text-left select-none touch-manipulation"
                         style={{ paddingLeft }}
                     >
                         <ChevronRight
@@ -62,7 +63,7 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
                                 <span>{node.name}/</span>
                             </>
                         )}
-                    </div>
+                    </button>
                     {isExpanded && node.children && (
                         <div>
                             {node.children.map(child => renderNode(child, depth + 1))}
@@ -77,15 +78,16 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
         const language = article?.language || 'markdown';
 
         return (
-            <div
+            <button
                 key={node.id}
+                type="button"
                 onClick={() => node.articleId && onFileClick(node.articleId)}
-                className="flex items-center gap-2 py-1 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors"
+                className="w-full flex items-center gap-2 py-2 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors text-left select-none touch-manipulation"
                 style={{ paddingLeft: paddingLeft + 14 }}
             >
                 <FileCode size={14} style={{ color: getLanguageColor(language) }} />
                 <span className="truncate">{node.name}</span>
-            </div>
+            </button>
         );
     };
 

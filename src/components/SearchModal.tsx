@@ -42,6 +42,16 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
         }
     }, [isOpen, articles]);
 
+    // Prevent background scrolling when modal is open (especially important on mobile)
+    useEffect(() => {
+        if (!isOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isOpen]);
+
     useEffect(() => {
         if (!fuseRef.current) return;
 
@@ -80,17 +90,14 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
     if (!isOpen) return null;
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
-            onClick={onClose}
-        >
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 md:pt-[15vh] px-3">
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/50" onPointerDown={onClose} />
 
             {/* Modal */}
             <div
                 className="relative w-full max-w-2xl bg-[#252526] rounded-lg border border-[#3c3c3c] shadow-2xl overflow-hidden"
-                onClick={e => e.stopPropagation()}
+                onPointerDown={e => e.stopPropagation()}
             >
                 {/* Search Input */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-[#3c3c3c]">
@@ -113,7 +120,7 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                 </div>
 
                 {/* Results */}
-                <div className="max-h-[50vh] overflow-y-auto">
+                <div className="max-h-[70vh] md:max-h-[50vh] overflow-y-auto">
                     {results.length === 0 ? (
                         <div className="px-4 py-8 text-center text-[#6e6e6e] text-sm">
                             {articles.length === 0
@@ -157,7 +164,7 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                 </div>
 
                 {/* Footer Hint */}
-                <div className="px-4 py-2 border-t border-[#3c3c3c] flex items-center gap-4 text-xs text-[#6e6e6e]">
+                <div className="hidden md:flex px-4 py-2 border-t border-[#3c3c3c] items-center gap-4 text-xs text-[#6e6e6e]">
                     <span className="flex items-center gap-1">
                         <kbd className="px-1.5 py-0.5 bg-[#3c3c3c] rounded">↑↓</kbd>
                         to navigate

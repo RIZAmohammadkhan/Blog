@@ -183,16 +183,6 @@ a {
     height: auto !important;
     margin: 10px auto;
   }
-
-  /* Hide sidebar on mobile */
-  .w-64.bg-\[\#252526\] {
-    display: none;
-  }
-
-  /* Adjust activity bar */
-  .w-12.bg-\[\#333333\] {
-    width: 40px;
-  }
 }
 
 /* Reduced motion preferences */

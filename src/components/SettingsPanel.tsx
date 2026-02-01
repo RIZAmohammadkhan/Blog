@@ -16,6 +16,16 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSettingsCha
         setLocalSettings(settings);
     }, [settings]);
 
+    // Prevent background scrolling when panel is open (especially important on mobile)
+    useEffect(() => {
+        if (!isOpen) return;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, [isOpen]);
+
     const handleFontFamilyChange = (value: string) => {
         const newSettings = { ...localSettings, fontFamily: value };
         setLocalSettings(newSettings);
@@ -37,16 +47,15 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSettingsCha
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            onClick={onClose}
+            className="fixed inset-0 z-[60] flex items-start md:items-center justify-center pt-4 md:pt-0 px-3"
         >
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/50" onPointerDown={onClose} />
 
             {/* Panel */}
             <div
-                className="relative w-full max-w-md bg-[#252526] rounded-lg border border-[#3c3c3c] shadow-2xl overflow-hidden"
-                onClick={e => e.stopPropagation()}
+                className="relative w-full max-w-md bg-[#252526] rounded-lg border border-[#3c3c3c] shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)] md:max-h-[90dvh]"
+                onPointerDown={e => e.stopPropagation()}
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#3c3c3c]">
@@ -63,7 +72,7 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSettingsCha
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-6">
+                <div className="p-4 md:p-6 space-y-6 overflow-y-auto">
                     {/* Font Family */}
                     <div>
                         <label className="block text-sm text-[#cccccc] mb-2">
