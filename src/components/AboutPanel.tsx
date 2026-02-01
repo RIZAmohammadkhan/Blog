@@ -1,10 +1,12 @@
 import { Github, Twitter, Mail, Heart, ExternalLink, Linkedin } from 'lucide-react';
 
 interface AboutPanelProps {
-    onClose?: () => void;
+    articleCount: number;
+    categoryCount: number;
+    isLoading?: boolean;
 }
 
-export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
+export default function AboutPanel({ articleCount, categoryCount, isLoading }: AboutPanelProps) {
     return (
         <div className="flex-1 overflow-y-auto py-4 px-3">
 
@@ -28,11 +30,11 @@ export default function AboutPanel({ onClose: _onClose }: AboutPanelProps) {
             {/* Stats */}
             <div className="grid grid-cols-2 gap-2 mb-4">
                 <div className="bg-[#1e1e1e] rounded p-3 border border-[#3e3e42] text-center">
-                    <div className="text-xl font-bold text-[#4ec9b0]">15+</div>
+                    <div className="text-xl font-bold text-[#4ec9b0]">{isLoading ? '…' : articleCount}</div>
                     <div className="text-xs text-[#858585]">Articles</div>
                 </div>
                 <div className="bg-[#1e1e1e] rounded p-3 border border-[#3e3e42] text-center">
-                    <div className="text-xl font-bold text-[#c586c0]">6</div>
+                    <div className="text-xl font-bold text-[#c586c0]">{isLoading ? '…' : categoryCount}</div>
                     <div className="text-xs text-[#858585]">Categories</div>
                 </div>
             </div>

@@ -195,9 +195,13 @@ function App() {
 
   // Render sidebar content based on active panel
   const renderSidebarContent = () => {
+    const rootNode = folderTree.find(node => node.id === 'root') || folderTree[0];
+    const rootLevelCategories = (rootNode?.children || []).filter(child => child.type === 'folder');
+    const categoryCount = rootLevelCategories.length;
+
     switch (activeSidebarPanel) {
       case 'about':
-        return <AboutPanel />;
+        return <AboutPanel articleCount={articles.length} categoryCount={categoryCount} isLoading={isLoading} />;
       case 'resources':
         return <ResourcesPanel />;
       case 'explorer':
