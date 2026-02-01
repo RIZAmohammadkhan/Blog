@@ -109,7 +109,7 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                         onChange={e => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Search articles..."
-                        className="flex-1 bg-transparent text-[#cccccc] text-sm outline-none placeholder-[#6e6e6e]"
+                        className="flex-1 bg-transparent text-[#cccccc] text-base md:text-sm outline-none placeholder-[#6e6e6e]"
                     />
                     <button
                         onClick={onClose}
