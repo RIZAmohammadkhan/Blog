@@ -1,5 +1,5 @@
 ---
-title: Hello Linux
+title: Kernel UP
 subtitle: The Developer’s Operating System
 readTime: 10 min
 date: 2026-01-30
@@ -28,10 +28,20 @@ If you are an absolute beginner, I recommend **EndeavourOS**. It provides a clea
 
 If you trust your ability to learn quickly, try **Omarchy**. It’s a powerhouse for developers. Once you master the Omarchy and Hyprland keybindings, your workflow will reach a level of efficiency you never thought possible.
 
-Since both recommendations are Arch-based, our next step is mastering the terminal and package management. Check out `tools/terminal.md` for next step or enjoy a cup of coffee.
+## How to install linux?
+
+Installing linux is a same process for any distro you have to follow the steps:
+1. Download the `.iso` image
+2. Create a bootable USB
+3. Boot in BIOS
+4. Boot from bootable drive
+5. Follow standard installation steps 
+
+Since now we are ready with linux our next step would be navigate the terminal,The core of linux. Check out `linux/terminal.md` for next step or enjoy a cup of coffee.
 
 ## HAPPY TINKERING!
-
 ---
-- Download [EndeavourOS](https://endeavouros.com/)
-- Download [Omarchy](https://omarchy.org/)
+To create a bootable USB use [etcher](Etcher.balena.io)
+Download [Omarchy](https://omarchy.org/) ISO. 
+Download [EndeavourOS](https://endeavouros.com/) ISO. 
+For EndeavourOS you will need a torrent client, use [Qbittorrent](https://www.qbittorrent.org/) as it is opensource and free.

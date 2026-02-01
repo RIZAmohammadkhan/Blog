@@ -3,7 +3,7 @@ title: The Terminal Rizz
 subtitle: Imagine using a mouse in 2026. Couldn't be us. 
 readTime: 10 min
 date: 2026-01-31
-tags: terminal, cli, kitty, alacritty;
+tags: terminal, cli, kitty, alacritty
 ---
 ## What actually is terminal?
 I remember starting out and hearing people say they used Zsh, Fish, or Bash which are text based and then, someone would mention Kitty, Alacritty, and I’d be confused because these apps have graphical interface while the others are just text. **So, what actually is a terminal?** 
@@ -28,6 +28,6 @@ we will cover the above command in an upcoming tutorial about package management
 ## I have setup my terminal emulator now which shell I should use?
 Use bash its great, when using A.I agents during coding they use bash scripts frequently. Also you can easily run bash scripts which have problem with other shells like fish. Also in containers, cloud you will almost always use bash.
 
-Next jump on tools/terminal_logistics.md were will look on basic commands to navigate the terminal or take a break and then come back tomorow.
+Next jump on `linux/terminal_logistics.md` were will look on basic commands to navigate the terminal or take a break and then come back tomorow.
 
 ## HAPPY NAVIGATION!
