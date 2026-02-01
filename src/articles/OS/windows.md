@@ -39,5 +39,3 @@ To learn more, check out:
 I’ve made a cheat sheet there with distro recommendations so you don’t have to repeat the same mistakes I did — breaking and fixing my system hundreds of times and spending countless hours only to find a perfect fit. The goal is simple: save your time and keep your focus on learning and building things.
 
 ### AT LAST I WILL SAY DON'T USE WINDOWS
-
-

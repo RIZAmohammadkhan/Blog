@@ -10,7 +10,8 @@ import {
   Check,
   X
 } from 'lucide-react';
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect } from 'react';
+import MarkdownRenderer from './MarkdownRenderer';
 
 interface Article {
   id: number;
@@ -600,109 +601,6 @@ export default function ArticleDetail() {
     }
   };
 
-  // Parse markdown-like content to HTML
-  const renderContent = (content: string): ReactNode[] => {
-    return content
-      .split('\n')
-      .map((line, i) => {
-        // Headers
-        if (line.startsWith('# ')) {
-          return <h1 key={i} className="text-2xl font-bold text-[#dcdcaa] mt-8 mb-4">{line.slice(2)}</h1>;
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={i} className="text-xl font-semibold text-[#dcdcaa] mt-6 mb-3">{line.slice(3)}</h2>;
-        }
-        // Code blocks
-        if (line.startsWith('```')) {
-          return null; // Handle separately
-        }
-        // Inline code
-        if (line.includes('`')) {
-          const parts = line.split(/(`[^`]+`)/);
-          return (
-            <p key={i} className="text-[#d4d4d4] leading-relaxed my-2">
-              {parts.map((part, j) =>
-                part.startsWith('`') && part.endsWith('`') ? (
-                  <code key={j} className="bg-[#252526] px-1.5 py-0.5 rounded text-[#ce9178] text-sm">
-                    {part.slice(1, -1)}
-                  </code>
-                ) : (
-                  <span key={j}>{part}</span>
-                )
-              )}
-            </p>
-          );
-        }
-        // Lists
-        if (line.startsWith('- ')) {
-          return <li key={i} className="text-[#d4d4d4] ml-4 my-1">{line.slice(2)}</li>;
-        }
-        // Checkboxes
-        if (line.startsWith('- [ ]')) {
-          return (
-            <div key={i} className="flex items-center gap-2 ml-4 my-1">
-              <div className="w-4 h-4 border border-[#6e6e6e] rounded" />
-              <span className="text-[#d4d4d4]">{line.slice(6)}</span>
-            </div>
-          );
-        }
-        // Empty lines
-        if (line.trim() === '') {
-          return <div key={i} className="h-4" />;
-        }
-        // Regular paragraph
-        return <p key={i} className="text-[#d4d4d4] leading-relaxed my-2">{line}</p>;
-      }).filter(Boolean);
-  };
-
-  // Extract code blocks
-  const renderCodeBlocks = (content: string) => {
-    const blocks: ReactNode[] = [];
-    const lines = content.split('\n');
-    let inCodeBlock = false;
-    let codeContent: string[] = [];
-    let codeLang = '';
-
-    lines.forEach((line, i) => {
-      if (line.startsWith('```')) {
-        if (inCodeBlock) {
-          // End of code block
-          blocks.push(
-            <div key={i} className="my-4 rounded-lg overflow-hidden bg-[#252526] border border-[#3e3e42]">
-              <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d30] border-b border-[#3e3e42]">
-                <span className="text-xs text-[#858585]">{codeLang || 'text'}</span>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(codeContent.join('\n'));
-                  }}
-                  className="text-xs text-[#569cd6] hover:text-[#4ec9b0] transition-colors"
-                >
-                  Copy
-                </button>
-              </div>
-              <pre className="p-4 overflow-x-auto">
-                <code className="text-sm text-[#d4d4d4] font-mono">
-                  {codeContent.join('\n')}
-                </code>
-              </pre>
-            </div>
-          );
-          codeContent = [];
-          codeLang = '';
-          inCodeBlock = false;
-        } else {
-          // Start of code block
-          inCodeBlock = true;
-          codeLang = line.slice(3).trim();
-        }
-      } else if (inCodeBlock) {
-        codeContent.push(line);
-      }
-    });
-
-    return blocks;
-  };
-
   return (
     <div className="min-h-screen bg-[#1e1e1e] flex flex-col">
       <div className="flex flex-1 h-screen">
@@ -806,9 +704,8 @@ export default function ArticleDetail() {
             {/* Content */}
             <div className="px-8 py-6 max-w-4xl">
               {article.content ? (
-                <div className="prose prose-invert max-w-none">
-                  {renderContent(article.content)}
-                  {renderCodeBlocks(article.content)}
+                <div className="max-w-none">
+                  <MarkdownRenderer content={article.content} />
                 </div>
               ) : (
                 <div className="text-center py-12">
