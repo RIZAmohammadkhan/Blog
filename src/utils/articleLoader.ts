@@ -77,14 +77,32 @@ export async function loadArticles(): Promise<{ articles: Article[]; folderTree:
 
     let articleId = 1;
 
+    const getOrCreateFolder = (parent: FolderNode, folderId: string, folderName: string): FolderNode => {
+        const existing = folderMap.get(folderId);
+        if (existing) return existing;
+
+        const node: FolderNode = {
+            id: folderId,
+            name: folderName,
+            type: 'folder',
+            children: []
+        };
+        folderMap.set(folderId, node);
+        parent.children ||= [];
+        parent.children.push(node);
+        return node;
+    };
+
     for (const [path, module] of Object.entries(articleModules)) {
         const content = module.default;
         const { frontmatter, body } = parseFrontmatter(content);
 
-        // Extract path parts: ../articles/category/filename.md
-        const pathParts = path.replace('../articles/', '').split('/');
+        // Extract path parts: ../articles/<folders...>/<filename>.md
+        const relativePath = path.replace('../articles/', '');
+        const pathParts = relativePath.split('/').filter(Boolean);
         const filename = pathParts.pop() || '';
-        const category = pathParts[0] || 'uncategorized';
+        const folders = pathParts;
+        const category = folders[0] || 'uncategorized';
 
         // Create article
         const article: Article = {
@@ -103,35 +121,39 @@ export async function loadArticles(): Promise<{ articles: Article[]; folderTree:
 
         articles.push(article);
 
-        // Build folder structure
-        if (!folderMap.has(category)) {
-            const categoryFolder: FolderNode = {
-                id: category,
-                name: category,
-                type: 'folder',
-                children: []
-            };
-            folderMap.set(category, categoryFolder);
-            rootFolder.children!.push(categoryFolder);
+        // Build folder structure mirroring src/articles
+        let parentFolder = rootFolder;
+        let currentId = 'root';
+
+        for (const segment of folders) {
+            const nextId = `${currentId}/${segment}`;
+            parentFolder = getOrCreateFolder(parentFolder, nextId, segment);
+            currentId = nextId;
         }
 
-        // Add file to category folder
-        const categoryFolder = folderMap.get(category)!;
-        categoryFolder.children!.push({
-            id: `file-${article.id}`,
+        parentFolder.children ||= [];
+        parentFolder.children.push({
+            id: `file:${relativePath}`,
             name: filename,
             type: 'file',
             articleId: article.id
         });
     }
 
-    // Sort folders and files alphabetically
-    rootFolder.children!.sort((a, b) => a.name.localeCompare(b.name));
-    for (const folder of rootFolder.children!) {
-        if (folder.children) {
-            folder.children.sort((a, b) => a.name.localeCompare(b.name));
+    const sortTree = (node: FolderNode) => {
+        if (!node.children) return;
+
+        node.children.sort((a, b) => {
+            if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+            return a.name.localeCompare(b.name);
+        });
+
+        for (const child of node.children) {
+            if (child.type === 'folder') sortTree(child);
         }
-    }
+    };
+
+    sortTree(rootFolder);
 
     return {
         articles,
