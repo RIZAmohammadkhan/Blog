@@ -302,6 +302,25 @@ function App() {
     setIsSidebarVisible(true);
   };
 
+  const toggleSidebarPanel = (panel: SidebarPanel) => {
+    if (isMobile) {
+      if (activeSidebarPanel === panel && isMobileSidebarOpen) {
+        setIsMobileSidebarOpen(false);
+      } else {
+        setActiveSidebarPanel(panel);
+        setIsMobileSidebarOpen(true);
+      }
+      return;
+    }
+
+    if (activeSidebarPanel === panel && isSidebarVisible) {
+      setIsSidebarVisible(false);
+    } else {
+      setActiveSidebarPanel(panel);
+      setIsSidebarVisible(true);
+    }
+  };
+
   const toggleExplorerPanel = () => {
     if (isMobile) {
       if (activeSidebarPanel === 'explorer' && isMobileSidebarOpen) {
@@ -345,7 +364,7 @@ function App() {
             <Search size={22} className="md:size-6" />
           </div>
           <div
-            onClick={() => openSidebarPanel('about')}
+            onClick={() => toggleSidebarPanel('about')}
             className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'about' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
               : 'text-[#858585] hover:text-[#cccccc]'
@@ -356,7 +375,7 @@ function App() {
           </div>
 
           <div
-            onClick={() => openSidebarPanel('resources')}
+            onClick={() => toggleSidebarPanel('resources')}
             className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'resources' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
               ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
               : 'text-[#858585] hover:text-[#cccccc]'
