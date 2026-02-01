@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { createHighlighter, type Highlighter } from 'shiki';
+import type { Highlighter } from 'shiki';
 
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
@@ -32,33 +32,35 @@ const shikiHtmlCache = new Map<string, string>();
 
 function getShikiHighlighter(): Promise<Highlighter> {
   if (!shikiHighlighterPromise) {
-    shikiHighlighterPromise = createHighlighter({
-      themes: ['dark-plus'],
-      langs: [
-        'text',
-        'bash',
-        'shellscript',
-        'json',
-        'yaml',
-        'toml',
-        'ini',
-        'markdown',
-        'html',
-        'css',
-        'javascript',
-        'typescript',
-        'tsx',
-        'jsx',
-        'python',
-        'go',
-        'rust',
-        'java',
-        'c',
-        'cpp',
-        'csharp',
-        'sql'
-      ]
-    });
+    shikiHighlighterPromise = import('shiki').then(({ createHighlighter }) =>
+      createHighlighter({
+        themes: ['dark-plus'],
+        langs: [
+          'text',
+          'bash',
+          'shellscript',
+          'json',
+          'yaml',
+          'toml',
+          'ini',
+          'markdown',
+          'html',
+          'css',
+          'javascript',
+          'typescript',
+          'tsx',
+          'jsx',
+          'python',
+          'go',
+          'rust',
+          'java',
+          'c',
+          'cpp',
+          'csharp',
+          'sql'
+        ]
+      })
+    );
   }
   return shikiHighlighterPromise;
 }
@@ -92,26 +94,106 @@ function normalizeFenceLanguage(language?: string): string {
 }
 
 function renderInlineText(text: string): ReactNode {
-  // Handle inline code and bold
-  const parts = text.split(/(`[^`]+`)|(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (!part) return null;
-    if (part.startsWith('`') && part.endsWith('`')) {
-      return (
-        <code key={i} className="bg-[#252526] px-1.5 py-0.5 rounded text-[#ce9178] text-sm">
-          {part.slice(1, -1)}
-        </code>
-      );
+  const nodes: ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+
+  const pushText = (value: string) => {
+    if (!value) return;
+    nodes.push(<span key={key++}>{value}</span>);
+  };
+
+  while (i < text.length) {
+    // Inline code: `code`
+    if (text[i] === '`') {
+      const end = text.indexOf('`', i + 1);
+      if (end !== -1) {
+        const code = text.slice(i + 1, end);
+        nodes.push(
+          <code key={key++} className="bg-[#252526] px-1.5 py-0.5 rounded text-[#ce9178] text-sm">
+            {code}
+          </code>
+        );
+        i = end + 1;
+        continue;
+      }
     }
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return (
-        <strong key={i} className="text-[#9cdcfe] font-semibold">
-          {part.slice(2, -2)}
-        </strong>
-      );
+
+    // Bold: **text**
+    if (text.startsWith('**', i)) {
+      const end = text.indexOf('**', i + 2);
+      if (end !== -1) {
+        const strongText = text.slice(i + 2, end);
+        nodes.push(
+          <strong key={key++} className="text-[#9cdcfe] font-semibold">
+            {strongText}
+          </strong>
+        );
+        i = end + 2;
+        continue;
+      }
     }
-    return <span key={i}>{part}</span>;
-  });
+
+    // Link: [label](url)
+    if (text[i] === '[') {
+      const closeBracket = text.indexOf(']', i + 1);
+      const openParen = closeBracket !== -1 ? text.indexOf('(', closeBracket + 1) : -1;
+      if (closeBracket !== -1 && openParen === closeBracket + 1 && text[openParen] === '(') {
+        // Find matching ')' allowing parentheses inside URL
+        let depth = 1;
+        let j = openParen + 1;
+        while (j < text.length && depth > 0) {
+          if (text[j] === '(') depth++;
+          else if (text[j] === ')') depth--;
+          j++;
+        }
+        const closeParen = depth === 0 ? j - 1 : -1;
+        if (closeParen !== -1) {
+          const label = text.slice(i + 1, closeBracket);
+          const url = text.slice(openParen + 1, closeParen).trim();
+
+          nodes.push(
+            <a
+              key={key++}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#ce9178] underline underline-offset-4 decoration-[#ce9178]/70 hover:text-[#dcdcaa] hover:decoration-[#dcdcaa]/70 transition-colors"
+            >
+              {label}
+            </a>
+          );
+
+          i = closeParen + 1;
+          continue;
+        }
+      }
+    }
+
+    // Plain text: consume until next special token
+    const nextBacktick = text.indexOf('`', i);
+    const nextBold = text.indexOf('**', i);
+    const nextLink = text.indexOf('[', i);
+    const candidates = [nextBacktick, nextBold, nextLink].filter(n => n !== -1);
+    const next = candidates.length ? Math.min(...candidates) : -1;
+
+    if (next === -1) {
+      pushText(text.slice(i));
+      break;
+    }
+
+    if (next > i) {
+      pushText(text.slice(i, next));
+      i = next;
+      continue;
+    }
+
+    // Fallback: avoid infinite loop
+    pushText(text[i]);
+    i++;
+  }
+
+  return nodes;
 }
 
 function MarkdownCodeBlock({ code, language }: { code: string; language?: string }) {

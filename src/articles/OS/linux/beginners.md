@@ -28,6 +28,10 @@ If you are an absolute beginner, I recommend **EndeavourOS**. It provides a clea
 
 If you trust your ability to learn quickly, try **Omarchy**. It’s a powerhouse for developers. Once you master the Omarchy and Hyprland keybindings, your workflow will reach a level of efficiency you never thought possible.
 
-Since both recommendations are Arch-based, our next step is mastering the terminal and package management. Check out `tools/terminal.md`.
+Since both recommendations are Arch-based, our next step is mastering the terminal and package management. Check out `tools/terminal.md` for next step or enjoy a cup of coffee.
 
 ## HAPPY TINKERING!
+
+---
+- Download [EndeavourOS](https://endeavouros.com/)
+- Download [Omarchy](https://omarchy.org/)

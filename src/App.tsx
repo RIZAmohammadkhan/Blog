@@ -35,25 +35,56 @@ import './App.css';
 type SidebarPanel = 'explorer' | 'about' | 'resources';
 
 // Welcome content component shown when no tabs are open
-function WelcomeContent() {
+function WelcomeContent({
+  isMobile,
+  onOpenExplorer,
+  onOpenSearch
+}: {
+  isMobile: boolean;
+  onOpenExplorer: () => void;
+  onOpenSearch: () => void;
+}) {
   return (
     <div className="flex-1 flex items-center justify-center bg-[#1e1e1e]">
-      <div className="text-center max-w-lg px-4 md:px-8">
-        <div className="text-6xl mb-6">📚</div>
+      <div className="text-center max-w-lg px-5 md:px-8">
+        <div className="text-5xl md:text-6xl mb-5 md:mb-6">📚</div>
         <h1 className="text-2xl font-bold text-[#dcdcaa] mb-4">Welcome to Rixa's Guide</h1>
-        <p className="text-[#858585] mb-6">
-          Browse the folders on the left or use search to find articles. <br></br> For Beginners I would recommend starting from the Hello-devs.md in getting_started folder.
+        <p className="text-[#858585] mb-6 leading-relaxed text-balance">
+          Browse the folders to find articles. For beginners, start with the <span className="text-[#cccccc]">Hello-devs.md</span> article in the <span className="text-[#cccccc]">getting_started</span> folder.
         </p>
-        <div className="flex flex-col gap-2 text-sm text-[#6e6e6e]">
-          <div className="flex items-center justify-center gap-2">
-            <kbd className="px-2 py-1 bg-[#3c3c3c] rounded text-[#cccccc]">Ctrl+K</kbd>
-            <span>Open search</span>
+
+        {isMobile ? (
+          <div className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={onOpenExplorer}
+              className="w-full rounded-lg bg-[#2d2d30] border border-[#3e3e42] px-4 py-3 text-sm text-[#d4d4d4] hover:bg-[#3a3a3d] active:bg-[#3e3e42] transition-colors"
+            >
+              Open Explorer
+            </button>
+            <button
+              type="button"
+              onClick={onOpenSearch}
+              className="w-full rounded-lg bg-[#252526] border border-[#3e3e42] px-4 py-3 text-sm text-[#d4d4d4] hover:bg-[#2f2f31] active:bg-[#3e3e42] transition-colors"
+            >
+              Search articles
+            </button>
+            <div className="text-xs text-[#6e6e6e] leading-relaxed">
+              Tip: use the icons on the left rail (Explorer, Search, About).
+            </div>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-[#cccccc]">Click files</span>
-            <span>in the sidebar to read articles</span>
+        ) : (
+          <div className="flex flex-col gap-2 text-sm text-[#6e6e6e]">
+            <div className="flex items-center justify-center gap-2">
+              <kbd className="px-2 py-1 bg-[#3c3c3c] rounded text-[#cccccc]">Ctrl+K</kbd>
+              <span>Open search</span>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-[#cccccc]">Click files</span>
+              <span>in the sidebar to read articles</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -402,7 +433,11 @@ function App() {
               fontSettings={fontSettings}
             />
           ) : (
-            <WelcomeContent />
+            <WelcomeContent
+              isMobile={isMobile}
+              onOpenExplorer={() => openSidebarPanel('explorer')}
+              onOpenSearch={() => setIsSearchOpen(true)}
+            />
           )}
         </div>
       </div>
