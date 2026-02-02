@@ -25,10 +25,12 @@ import { useIsMobile } from './hooks/use-mobile';
 import { Sheet, SheetContent } from './components/ui/sheet';
 import {
   defaultFontSettings,
+  defaultThemeId,
   type Tab,
   type FontSettings,
   type Article,
-  type FolderNode
+  type FolderNode,
+  type ThemeId
 } from './types';
 import './App.css';
 
@@ -45,12 +47,12 @@ function WelcomeContent({
   onOpenSearch: () => void;
 }) {
   return (
-    <div className="flex-1 flex items-center justify-center bg-[#1e1e1e]">
+    <div className="flex-1 flex items-center justify-center bg-[color:var(--bg-primary)]">
       <div className="text-center max-w-lg px-5 md:px-8">
         <div className="text-5xl md:text-6xl mb-5 md:mb-6">📚</div>
-        <h1 className="text-2xl font-bold text-[#dcdcaa] mb-4">Welcome to Rixa's Guide</h1>
-        <p className="text-[#858585] mb-6 leading-relaxed text-balance">
-          Browse the folders to find articles. For beginners, start with the <span className="text-[#cccccc]">Hello-devs.md</span> article in the <span className="text-[#cccccc]">getting_started</span> folder.
+        <h1 className="text-2xl font-bold text-[color:var(--accent-yellow)] mb-4">Welcome to Rixa's Guide</h1>
+        <p className="text-[color:var(--text-secondary)] mb-6 leading-relaxed text-balance">
+          Browse the folders to find articles. For beginners, start with the <span className="text-[color:var(--text-primary)]">Hello-devs.md</span> article in the <span className="text-[color:var(--text-primary)]">getting_started</span> folder.
         </p>
 
         {isMobile ? (
@@ -58,29 +60,29 @@ function WelcomeContent({
             <button
               type="button"
               onClick={onOpenExplorer}
-              className="w-full rounded-lg bg-[#2d2d30] border border-[#3e3e42] px-4 py-3 text-sm text-[#d4d4d4] hover:bg-[#3a3a3d] active:bg-[#3e3e42] transition-colors"
+              className="w-full rounded-lg bg-[color:var(--bg-tertiary)] border border-[color:var(--bg-hover)] px-4 py-3 text-sm text-[color:var(--text-primary)] hover:bg-[color:var(--bg-hover)] active:bg-[color:var(--bg-selected)] transition-colors"
             >
               Open Explorer
             </button>
             <button
               type="button"
               onClick={onOpenSearch}
-              className="w-full rounded-lg bg-[#252526] border border-[#3e3e42] px-4 py-3 text-sm text-[#d4d4d4] hover:bg-[#2f2f31] active:bg-[#3e3e42] transition-colors"
+              className="w-full rounded-lg bg-[color:var(--bg-secondary)] border border-[color:var(--bg-hover)] px-4 py-3 text-sm text-[color:var(--text-primary)] hover:bg-[color:var(--bg-hover)] active:bg-[color:var(--bg-selected)] transition-colors"
             >
               Search articles
             </button>
-            <div className="text-xs text-[#6e6e6e] leading-relaxed">
+            <div className="text-xs text-[color:var(--text-muted)] leading-relaxed">
               Tip: use the icons on the left rail (Explorer, Search, About).
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-2 text-sm text-[#6e6e6e]">
+          <div className="flex flex-col gap-2 text-sm text-[color:var(--text-muted)]">
             <div className="flex items-center justify-center gap-2">
-              <kbd className="px-2 py-1 bg-[#3c3c3c] rounded text-[#cccccc]">Ctrl+K</kbd>
+              <kbd className="px-2 py-1 bg-[color:var(--bg-kbd)] rounded text-[color:var(--text-primary)]">Ctrl+K</kbd>
               <span>Open search</span>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-[#cccccc]">Click files</span>
+              <span className="text-[color:var(--text-primary)]">Click files</span>
               <span>in the sidebar to read articles</span>
             </div>
           </div>
@@ -125,6 +127,15 @@ function App() {
     return defaultFontSettings;
   });
 
+  // Theme
+  const [theme, setTheme] = useState<ThemeId>(() => {
+    const saved = localStorage.getItem('rixa-theme');
+    if (saved === 'dracula' || saved === 'one-dark-pro' || saved === 'aura-dark' || saved === 'default') {
+      return saved;
+    }
+    return defaultThemeId;
+  });
+
   // Load articles on mount
   useEffect(() => {
     loadArticles().then(({ articles: loadedArticles, folderTree: loadedTree }) => {
@@ -138,6 +149,12 @@ function App() {
   useEffect(() => {
     localStorage.setItem('rixa-font-settings', JSON.stringify(fontSettings));
   }, [fontSettings]);
+
+  // Apply + persist theme
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('rixa-theme', theme);
+  }, [theme]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -240,7 +257,7 @@ function App() {
         return (
           <>
             {isLoading ? (
-              <div className="flex-1 flex items-center justify-center text-[#6e6e6e]">
+              <div className="flex-1 flex items-center justify-center text-[color:var(--text-muted)]">
                 Loading articles...
               </div>
             ) : (
@@ -253,8 +270,8 @@ function App() {
 
             {/* Open Editors Section */}
             {openTabs.length > 0 && (
-              <div className="border-t border-[#1e1e1e]">
-                <div className="h-8 flex items-center px-3 text-xs text-[#bbbbbb]">
+              <div className="border-t border-[color:var(--bg-primary)]">
+                <div className="h-8 flex items-center px-3 text-xs text-[color:var(--text-primary)]">
                   <ChevronRight size={12} className="mr-1 rotate-90" />
                   OPEN EDITORS
                 </div>
@@ -267,8 +284,8 @@ function App() {
                         if (isMobile) setIsMobileSidebarOpen(false);
                       }}
                       className={`flex items-center gap-2 px-2 py-1 text-sm cursor-pointer transition-colors ${tab.id === activeTabId
-                        ? 'bg-[#37373d] text-[#cccccc]'
-                        : 'text-[#cccccc] hover:bg-[#2a2d2e]'
+                        ? 'bg-[color:var(--bg-selected)] text-[color:var(--text-primary)]'
+                        : 'text-[color:var(--text-primary)] hover:bg-[color:var(--bg-hover)]'
                         }`}
                     >
                       <FileCode size={14} className="text-[#519aba]" />
@@ -341,16 +358,16 @@ function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[#1e1e1e] flex flex-col">
+    <div className="min-h-[100dvh] bg-[color:var(--bg-primary)] flex flex-col">
       {/* Main Layout - Full height without top bar */}
       <div className="flex flex-1 h-[100dvh]">
         {/* Activity Bar */}
-        <div className="w-10 md:w-12 bg-[#333333] flex flex-col items-center py-2 gap-1">
+        <div className="w-10 md:w-12 bg-[color:var(--bg-activity)] flex flex-col items-center py-2 gap-1">
           <div
             onClick={toggleExplorerPanel}
             className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'explorer' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
-              ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
-              : 'text-[#858585] hover:text-[#cccccc]'
+              ? 'text-[color:var(--text-primary)] border-l-2 border-[color:var(--accent-blue)] bg-[color:var(--bg-secondary)]'
+              : 'text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]'
               }`}
             title="Explorer"
           >
@@ -358,7 +375,7 @@ function App() {
           </div>
           <div
             onClick={() => setIsSearchOpen(true)}
-            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] cursor-pointer"
             title="Search (Ctrl+K)"
           >
             <Search size={22} className="md:size-6" />
@@ -366,8 +383,8 @@ function App() {
           <div
             onClick={() => toggleSidebarPanel('about')}
             className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'about' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
-              ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
-              : 'text-[#858585] hover:text-[#cccccc]'
+              ? 'text-[color:var(--text-primary)] border-l-2 border-[color:var(--accent-blue)] bg-[color:var(--bg-secondary)]'
+              : 'text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]'
               }`}
             title="About"
           >
@@ -377,8 +394,8 @@ function App() {
           <div
             onClick={() => toggleSidebarPanel('resources')}
             className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center cursor-pointer transition-colors ${activeSidebarPanel === 'resources' && (isMobile ? isMobileSidebarOpen : isSidebarVisible)
-              ? 'text-[#cccccc] border-l-2 border-[#007acc] bg-[#252526]'
-              : 'text-[#858585] hover:text-[#cccccc]'
+              ? 'text-[color:var(--text-primary)] border-l-2 border-[color:var(--accent-blue)] bg-[color:var(--bg-secondary)]'
+              : 'text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)]'
               }`}
             title="Resources"
           >
@@ -393,7 +410,7 @@ function App() {
                 setIsSidebarVisible(prev => !prev);
               }
             }}
-            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] cursor-pointer"
             title="Toggle Sidebar (Ctrl+B)"
           >
             {(isMobile ? isMobileSidebarOpen : isSidebarVisible) ? <PanelLeftClose size={22} className="md:size-6" /> : <PanelLeft size={22} className="md:size-6" />}
@@ -403,7 +420,7 @@ function App() {
               if (isMobile) setIsMobileSidebarOpen(false);
               setIsSettingsOpen(true);
             }}
-            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[#858585] hover:text-[#cccccc] cursor-pointer"
+            className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] cursor-pointer"
             title="Settings"
           >
             <Settings size={22} className="md:size-6" />
@@ -412,8 +429,8 @@ function App() {
 
         {/* Desktop Sidebar */}
         {isSidebarVisible && (
-          <div className="hidden md:flex w-64 bg-[#252526] border-r border-[#1e1e1e] flex-col">
-            <div className="h-9 flex items-center px-3 text-xs font-bold text-[#bbbbbb] uppercase tracking-wide">
+          <div className="hidden md:flex w-64 bg-[color:var(--bg-secondary)] border-r border-[color:var(--bg-primary)] flex-col">
+            <div className="h-9 flex items-center px-3 text-xs font-bold text-[color:var(--text-primary)] uppercase tracking-wide">
               {sidebarTitle}
             </div>
             {renderSidebarContent()}
@@ -424,9 +441,9 @@ function App() {
         <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
           <SheetContent
             side="left"
-            className="md:hidden bg-[#252526] border-[#1e1e1e] p-0 gap-0"
+            className="md:hidden bg-[color:var(--bg-secondary)] border-[color:var(--bg-primary)] p-0 gap-0"
           >
-            <div className="h-9 flex items-center px-3 text-xs font-bold text-[#bbbbbb] uppercase tracking-wide border-b border-[#1e1e1e]">
+            <div className="h-9 flex items-center px-3 text-xs font-bold text-[color:var(--text-primary)] uppercase tracking-wide border-b border-[color:var(--bg-primary)]">
               {sidebarTitle}
             </div>
             <div className="flex-1 min-h-0 flex flex-col">
@@ -436,7 +453,7 @@ function App() {
         </Sheet>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col bg-[#1e1e1e] overflow-hidden">
+        <div className="flex-1 flex flex-col bg-[color:var(--bg-primary)] overflow-hidden">
           {/* Tab Bar */}
           <TabBar
             tabs={openTabs}
@@ -450,6 +467,7 @@ function App() {
             <ArticleViewer
               article={activeArticle}
               fontSettings={fontSettings}
+              theme={theme}
             />
           ) : (
             <WelcomeContent
@@ -462,9 +480,9 @@ function App() {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="hidden md:flex h-6 bg-[#007acc] items-center justify-between px-2 text-xs text-white">
+      <div className="hidden md:flex h-6 bg-[color:var(--accent-blue)] items-center justify-between px-2 text-xs text-[color:var(--text-on-accent)]">
         <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1 cursor-pointer hover:bg-[#1a7dc4] px-1 rounded">
+          <span className="flex items-center gap-1 cursor-pointer hover:bg-[color:var(--accent-blue-hover)] px-1 rounded">
             <GitBranch size={12} />
             main
           </span>
@@ -502,6 +520,8 @@ function App() {
         onClose={() => setIsSettingsOpen(false)}
         settings={fontSettings}
         onSettingsChange={setFontSettings}
+        theme={theme}
+        onThemeChange={setTheme}
       />
     </div>
   );

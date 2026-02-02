@@ -11,8 +11,8 @@ interface TabBarProps {
 export default function TabBar({ tabs, activeTabId, onTabClick, onTabClose }: TabBarProps) {
     if (tabs.length === 0) {
         return (
-            <div className="h-9 bg-[#2d2d2d] flex items-end">
-                <div className="flex items-center gap-2 px-3 py-2 bg-[#1e1e1e] text-[#969696] text-sm border-t-2 border-transparent">
+            <div className="h-9 bg-[color:var(--bg-tertiary)] flex items-end">
+                <div className="flex items-center gap-2 px-3 py-2 bg-[color:var(--bg-primary)] text-[color:var(--text-secondary)] text-sm border-t-2 border-transparent">
                     <span className="italic">No open editors</span>
                 </div>
             </div>
@@ -20,14 +20,14 @@ export default function TabBar({ tabs, activeTabId, onTabClick, onTabClose }: Ta
     }
 
     return (
-        <div className="h-9 bg-[#2d2d2d] flex items-end overflow-x-auto">
+        <div className="h-9 bg-[color:var(--bg-tertiary)] flex items-end overflow-x-auto">
             {tabs.map(tab => (
                 <div
                     key={tab.id}
                     onClick={() => onTabClick(tab.id)}
                     className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer min-w-fit group transition-colors ${tab.id === activeTabId
-                            ? 'bg-[#1e1e1e] text-[#cccccc] border-t-2 border-[#007acc]'
-                            : 'text-[#969696] hover:bg-[#2d2d2d] border-t-2 border-transparent'
+                            ? 'bg-[color:var(--bg-primary)] text-[color:var(--text-primary)] border-t-2 border-[color:var(--accent-blue)]'
+                            : 'text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-tertiary)] border-t-2 border-transparent'
                         }`}
                 >
                     <FileCode
@@ -41,8 +41,8 @@ export default function TabBar({ tabs, activeTabId, onTabClick, onTabClose }: Ta
                             onTabClose(tab.id);
                         }}
                         className={`p-1 rounded transition-colors ${tab.id === activeTabId
-                                ? 'hover:bg-[#3e3e42]'
-                                : 'md:opacity-0 md:group-hover:opacity-100 hover:bg-[#3e3e42]'
+                                ? 'hover:bg-[color:var(--bg-hover)]'
+                                : 'md:opacity-0 md:group-hover:opacity-100 hover:bg-[color:var(--bg-hover)]'
                             }`}
                         aria-label={`Close ${tab.title}`}
                     >

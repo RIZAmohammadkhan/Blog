@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Check, Copy } from 'lucide-react';
 import type { Highlighter } from 'shiki';
+import { defaultThemeId, type ThemeId } from '../types';
 
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
@@ -34,7 +35,7 @@ function getShikiHighlighter(): Promise<Highlighter> {
   if (!shikiHighlighterPromise) {
     shikiHighlighterPromise = import('shiki').then(({ createHighlighter }) =>
       createHighlighter({
-        themes: ['dark-plus'],
+        themes: ['dark-plus', 'dracula', 'one-dark-pro', 'aurora-x'],
         langs: [
           'text',
           'bash',
@@ -110,7 +111,7 @@ function renderInlineText(text: string): ReactNode {
       if (end !== -1) {
         const code = text.slice(i + 1, end);
         nodes.push(
-          <code key={key++} className="bg-[#252526] px-1.5 py-0.5 rounded text-[#ce9178] text-sm">
+          <code key={key++} className="bg-[color:var(--bg-secondary)] px-1.5 py-0.5 rounded text-[color:var(--accent-orange)] text-sm">
             {code}
           </code>
         );
@@ -158,7 +159,7 @@ function renderInlineText(text: string): ReactNode {
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#ce9178] underline underline-offset-4 decoration-[#ce9178]/70 hover:text-[#dcdcaa] hover:decoration-[#dcdcaa]/70 transition-colors"
+              className="text-[color:var(--accent-orange)] underline underline-offset-4 decoration-[color:var(--accent-orange)]/70 hover:text-[color:var(--accent-yellow)] hover:decoration-[color:var(--accent-yellow)]/70 transition-colors"
             >
               {label}
             </a>
@@ -196,7 +197,14 @@ function renderInlineText(text: string): ReactNode {
   return nodes;
 }
 
-function MarkdownCodeBlock({ code, language }: { code: string; language?: string }) {
+const shikiThemeByAppTheme: Record<ThemeId, string> = {
+  default: 'dark-plus',
+  dracula: 'dracula',
+  'one-dark-pro': 'one-dark-pro',
+  'aura-dark': 'aurora-x'
+};
+
+function MarkdownCodeBlock({ code, language, theme }: { code: string; language?: string; theme: ThemeId }) {
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 
@@ -204,7 +212,7 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
     let cancelled = false;
 
     const lang = normalizeFenceLanguage(language);
-    const cacheKey = `${lang}\n${code}`;
+    const cacheKey = `${theme}:${lang}\n${code}`;
     const cached = shikiHtmlCache.get(cacheKey);
     if (cached) {
       setHighlightedHtml(cached);
@@ -215,9 +223,10 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
 
     getShikiHighlighter()
       .then(highlighter => {
+        const shikiTheme = shikiThemeByAppTheme[theme] || shikiThemeByAppTheme[defaultThemeId];
         const html = highlighter.codeToHtml(code, {
           lang,
-          theme: 'dark-plus'
+          theme: shikiTheme
         });
 
         // Keep our container styling; remove Shiki's background inline style.
@@ -232,7 +241,7 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
     return () => {
       cancelled = true;
     };
-  }, [code, language]);
+  }, [code, language, theme]);
 
   const onCopy = async () => {
     const ok = await copyToClipboard(code);
@@ -242,17 +251,17 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
   };
 
   return (
-    <div className="my-4 rounded-lg overflow-hidden bg-[#1e1e1e] border border-[#3e3e42]">
-      <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d30] border-b border-[#3e3e42]">
-        <span className="text-xs text-[#858585]">{normalizeFenceLanguage(language) || 'text'}</span>
+    <div className="my-4 rounded-lg overflow-hidden bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)]">
+      <div className="flex items-center justify-between px-4 py-2 bg-[color:var(--bg-tertiary)] border-b border-[color:var(--bg-hover)]">
+        <span className="text-xs text-[color:var(--text-secondary)]">{normalizeFenceLanguage(language) || 'text'}</span>
         <button
           type="button"
           onClick={onCopy}
-          className="p-1.5 rounded hover:bg-[#3e3e42] text-[#858585] hover:text-[#cccccc] transition-colors"
+          className="p-1.5 rounded hover:bg-[color:var(--bg-hover)] text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] transition-colors"
           aria-label={copied ? 'Copied' : 'Copy code'}
           title={copied ? 'Copied' : 'Copy'}
         >
-          {copied ? <Check size={14} className="text-[#89e051]" /> : <Copy size={14} />}
+          {copied ? <Check size={14} className="text-[color:var(--accent-green)]" /> : <Copy size={14} />}
         </button>
       </div>
       <div className="p-4 overflow-x-auto">
@@ -264,7 +273,7 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
           />
         ) : (
           <pre>
-            <code className="text-sm text-[#d4d4d4] font-mono">{code}</code>
+            <code className="text-sm text-[color:var(--text-primary)] font-mono">{code}</code>
           </pre>
         )}
       </div>
@@ -272,7 +281,7 @@ function MarkdownCodeBlock({ code, language }: { code: string; language?: string
   );
 }
 
-function buildNodes(content: string): ReactNode[] {
+function buildNodes(content: string, theme: ThemeId): ReactNode[] {
   const elements: ReactNode[] = [];
   const lines = content.split('\n');
 
@@ -283,7 +292,7 @@ function buildNodes(content: string): ReactNode[] {
 
   const flushCodeBlock = () => {
     const code = codeLines.join('\n');
-    elements.push(<MarkdownCodeBlock key={`code-${blockIndex++}`} code={code} language={codeLang} />);
+    elements.push(<MarkdownCodeBlock key={`code-${blockIndex++}`} code={code} language={codeLang} theme={theme} />);
     codeLines = [];
     codeLang = '';
   };
@@ -311,7 +320,7 @@ function buildNodes(content: string): ReactNode[] {
     // Headers
     if (line.startsWith('# ')) {
       elements.push(
-        <h1 key={i} className="text-2xl font-bold text-[#dcdcaa] mt-8 mb-4 first:mt-0">
+        <h1 key={i} className="text-2xl font-bold text-[color:var(--accent-yellow)] mt-8 mb-4 first:mt-0">
           {line.slice(2)}
         </h1>
       );
@@ -319,7 +328,7 @@ function buildNodes(content: string): ReactNode[] {
     }
     if (line.startsWith('## ')) {
       elements.push(
-        <h2 key={i} className="text-xl font-semibold text-[#dcdcaa] mt-6 mb-3">
+        <h2 key={i} className="text-xl font-semibold text-[color:var(--accent-yellow)] mt-6 mb-3">
           {line.slice(3)}
         </h2>
       );
@@ -327,7 +336,7 @@ function buildNodes(content: string): ReactNode[] {
     }
     if (line.startsWith('### ')) {
       elements.push(
-        <h3 key={i} className="text-lg font-semibold text-[#dcdcaa] mt-5 mb-2">
+        <h3 key={i} className="text-lg font-semibold text-[color:var(--accent-yellow)] mt-5 mb-2">
           {line.slice(4)}
         </h3>
       );
@@ -336,7 +345,7 @@ function buildNodes(content: string): ReactNode[] {
 
     // Horizontal rule
     if (line.trim() === '---') {
-      elements.push(<hr key={i} className="my-6 border-[#3e3e42]" />);
+      elements.push(<hr key={i} className="my-6 border-[color:var(--bg-hover)]" />);
       continue;
     }
 
@@ -348,7 +357,7 @@ function buildNodes(content: string): ReactNode[] {
         elements.push(
           <div key={i} className="flex text-sm my-1">
             {cells.map((cell, j) => (
-              <div key={j} className="flex-1 px-2 py-1 text-[#cccccc] border border-[#3e3e42]">
+              <div key={j} className="flex-1 px-2 py-1 text-[color:var(--text-primary)] border border-[color:var(--bg-hover)]">
                 {cell.trim()}
               </div>
             ))}
@@ -362,8 +371,8 @@ function buildNodes(content: string): ReactNode[] {
     if (/^\s*- \[ \]\s+/.test(line)) {
       elements.push(
         <div key={i} className="flex items-center gap-2 ml-4 my-1">
-          <div className="w-4 h-4 border border-[#6e6e6e] rounded" />
-          <span className="text-[#d4d4d4]">{line.replace(/^\s*- \[ \]\s+/, '')}</span>
+          <div className="w-4 h-4 border border-[color:var(--text-muted)] rounded" />
+          <span className="text-[color:var(--text-primary)]">{line.replace(/^\s*- \[ \]\s+/, '')}</span>
         </div>
       );
       continue;
@@ -371,8 +380,8 @@ function buildNodes(content: string): ReactNode[] {
     if (/^\s*- \[x\]\s+/i.test(line)) {
       elements.push(
         <div key={i} className="flex items-center gap-2 ml-4 my-1">
-          <div className="w-4 h-4 bg-[#007acc] rounded flex items-center justify-center text-white text-xs">✓</div>
-          <span className="text-[#d4d4d4]">{line.replace(/^\s*- \[x\]\s+/i, '')}</span>
+          <div className="w-4 h-4 bg-[color:var(--accent-blue)] rounded flex items-center justify-center text-[color:var(--text-on-accent)] text-xs">✓</div>
+          <span className="text-[color:var(--text-primary)]">{line.replace(/^\s*- \[x\]\s+/i, '')}</span>
         </div>
       );
       continue;
@@ -389,7 +398,7 @@ function buildNodes(content: string): ReactNode[] {
         items.push(
           <li
             key={`ul-${i}`}
-            className={`text-[#d4d4d4] leading-relaxed ${indent ? 'ml-4' : ''}`}
+            className={`text-[color:var(--text-primary)] leading-relaxed ${indent ? 'ml-4' : ''}`}
           >
             {renderInlineText(itemText)}
           </li>
@@ -400,7 +409,7 @@ function buildNodes(content: string): ReactNode[] {
       elements.push(
         <ul
           key={`ul-block-${i}`}
-          className="my-3 pl-6 list-disc space-y-1 marker:text-[#569cd6]"
+          className="my-3 pl-6 list-disc space-y-1 marker:text-[color:var(--accent-blue)]"
         >
           {items}
         </ul>
@@ -419,7 +428,7 @@ function buildNodes(content: string): ReactNode[] {
         items.push(
           <li
             key={`ol-${i}`}
-            className={`text-[#d4d4d4] leading-relaxed ${indent ? 'ml-4' : ''}`}
+            className={`text-[color:var(--text-primary)] leading-relaxed ${indent ? 'ml-4' : ''}`}
           >
             {renderInlineText(itemText)}
           </li>
@@ -430,7 +439,7 @@ function buildNodes(content: string): ReactNode[] {
       elements.push(
         <ol
           key={`ol-block-${i}`}
-          className="my-3 pl-6 list-decimal space-y-1 marker:text-[#569cd6]"
+          className="my-3 pl-6 list-decimal space-y-1 marker:text-[color:var(--accent-blue)]"
         >
           {items}
         </ol>
@@ -441,7 +450,7 @@ function buildNodes(content: string): ReactNode[] {
     // Italic text lines (starting and ending with single *)
     if (line.startsWith('*') && line.endsWith('*') && line.length > 2) {
       elements.push(
-        <p key={i} className="text-[#6a9955] italic my-2">
+        <p key={i} className="text-[color:var(--accent-green)] italic my-2">
           {line.slice(1, -1)}
         </p>
       );
@@ -456,7 +465,7 @@ function buildNodes(content: string): ReactNode[] {
 
     // Regular paragraph
     elements.push(
-      <p key={i} className="text-[#d4d4d4] leading-relaxed my-2">
+      <p key={i} className="text-[color:var(--text-primary)] leading-relaxed my-2">
         {renderInlineText(line)}
       </p>
     );
@@ -469,7 +478,8 @@ function buildNodes(content: string): ReactNode[] {
   return elements;
 }
 
-export default function MarkdownRenderer({ content }: { content: string }) {
-  const nodes = useMemo(() => buildNodes(content), [content]);
+export default function MarkdownRenderer({ content, theme }: { content: string; theme?: ThemeId }) {
+  const resolvedTheme = theme || defaultThemeId;
+  const nodes = useMemo(() => buildNodes(content, resolvedTheme), [content, resolvedTheme]);
   return <>{nodes}</>;
 }

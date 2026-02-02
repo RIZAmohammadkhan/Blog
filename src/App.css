@@ -7,8 +7,8 @@ html {
 
 /* Custom selection for code editor feel */
 ::selection {
-  background-color: #264f78;
-  color: #d4d4d4;
+  background-color: var(--accent-blue);
+  color: var(--bg-primary);
 }
 
 /* Ensure pinned sections stack correctly */
@@ -37,20 +37,20 @@ img {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e1e1e;
+  background: var(--bg-primary);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #424242;
+  background: var(--bg-hover);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4f4f4f;
+  background: var(--text-secondary);
 }
 
 ::-webkit-scrollbar-corner {
-  background: #1e1e1e;
+  background: var(--bg-primary);
 }
 
 /* Terminal cursor animation */
@@ -58,7 +58,7 @@ img {
   display: inline-block;
   width: 8px;
   height: 1.2em;
-  background: #aeafad;
+  background: var(--terminal-cursor);
   animation: blink 1s step-end infinite;
   vertical-align: text-bottom;
   margin-left: 2px;
@@ -84,35 +84,35 @@ img {
 
 /* Code syntax highlighting classes */
 .syntax-keyword {
-  color: #569cd6;
+  color: var(--accent-blue);
 }
 
 .syntax-string {
-  color: #ce9178;
+  color: var(--accent-orange);
 }
 
 .syntax-function {
-  color: #dcdcaa;
+  color: var(--accent-yellow);
 }
 
 .syntax-comment {
-  color: #6a9955;
+  color: var(--accent-green);
 }
 
 .syntax-number {
-  color: #b5cea8;
+  color: var(--accent-cyan);
 }
 
 .syntax-variable {
-  color: #9cdcfe;
+  color: var(--accent-purple);
 }
 
 .syntax-operator {
-  color: #d4d4d4;
+  color: var(--text-primary);
 }
 
 .syntax-punctuation {
-  color: #d4d4d4;
+  color: var(--text-primary);
 }
 
 /* Hover effects for interactive elements */
@@ -121,7 +121,7 @@ img {
 }
 
 .terminal-card:hover {
-  border-color: #007acc;
+  border-color: var(--accent-blue);
   box-shadow: 0 0 20px rgba(0, 122, 204, 0.15);
 }
 

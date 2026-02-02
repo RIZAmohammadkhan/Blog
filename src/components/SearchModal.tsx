@@ -96,12 +96,12 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
 
             {/* Modal */}
             <div
-                className="relative w-full max-w-2xl bg-[#252526] rounded-lg border border-[#3c3c3c] shadow-2xl overflow-hidden"
+                className="relative w-full max-w-2xl bg-[color:var(--bg-secondary)] rounded-lg border border-[color:var(--bg-hover)] shadow-2xl overflow-hidden"
                 onPointerDown={e => e.stopPropagation()}
             >
                 {/* Search Input */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-[#3c3c3c]">
-                    <Search size={18} className="text-[#858585]" />
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-[color:var(--bg-hover)]">
+                    <Search size={18} className="text-[color:var(--text-secondary)]" />
                     <input
                         ref={inputRef}
                         type="text"
@@ -109,11 +109,11 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                         onChange={e => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Search articles..."
-                        className="flex-1 bg-transparent text-[#cccccc] text-base md:text-sm outline-none placeholder-[#6e6e6e]"
+                        className="flex-1 bg-transparent text-[color:var(--text-primary)] text-base md:text-sm outline-none placeholder-[color:var(--text-muted)]"
                     />
                     <button
                         onClick={onClose}
-                        className="text-[#858585] hover:text-[#cccccc] transition-colors"
+                        className="text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] transition-colors"
                     >
                         <X size={16} />
                     </button>
@@ -122,7 +122,7 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                 {/* Results */}
                 <div className="max-h-[70vh] md:max-h-[50vh] overflow-y-auto">
                     {results.length === 0 ? (
-                        <div className="px-4 py-8 text-center text-[#6e6e6e] text-sm">
+                        <div className="px-4 py-8 text-center text-[color:var(--text-muted)] text-sm">
                             {articles.length === 0
                                 ? "No articles loaded. Add .md files to public/articles/"
                                 : `No articles found matching "${query}"`
@@ -138,8 +138,8 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                                         onClose();
                                     }}
                                     className={`flex items-center gap-3 px-4 py-2 cursor-pointer transition-colors ${index === selectedIndex
-                                            ? 'bg-[#04395e]'
-                                            : 'hover:bg-[#2a2d2e]'
+                                            ? 'bg-[color:var(--bg-selected)]'
+                                            : 'hover:bg-[color:var(--bg-hover)]'
                                         }`}
                                 >
                                     <FileCode
@@ -147,14 +147,14 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                                         style={{ color: getLanguageColor(article.language) }}
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <div className="text-sm text-[#cccccc] truncate">
+                                        <div className="text-sm text-[color:var(--text-primary)] truncate">
                                             {article.displayTitle}
                                         </div>
-                                        <div className="text-xs text-[#858585] truncate">
+                                        <div className="text-xs text-[color:var(--text-secondary)] truncate">
                                             {article.title} • {article.category}
                                         </div>
                                     </div>
-                                    <span className="text-xs text-[#6e6e6e]">
+                                    <span className="text-xs text-[color:var(--text-muted)]">
                                         {article.readTime}
                                     </span>
                                 </div>
@@ -164,17 +164,17 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                 </div>
 
                 {/* Footer Hint */}
-                <div className="hidden md:flex px-4 py-2 border-t border-[#3c3c3c] items-center gap-4 text-xs text-[#6e6e6e]">
+                <div className="hidden md:flex px-4 py-2 border-t border-[color:var(--bg-hover)] items-center gap-4 text-xs text-[color:var(--text-muted)]">
                     <span className="flex items-center gap-1">
-                        <kbd className="px-1.5 py-0.5 bg-[#3c3c3c] rounded">↑↓</kbd>
+                        <kbd className="px-1.5 py-0.5 bg-[color:var(--bg-kbd)] rounded text-[color:var(--text-primary)]">↑↓</kbd>
                         to navigate
                     </span>
                     <span className="flex items-center gap-1">
-                        <kbd className="px-1.5 py-0.5 bg-[#3c3c3c] rounded">Enter</kbd>
+                        <kbd className="px-1.5 py-0.5 bg-[color:var(--bg-kbd)] rounded text-[color:var(--text-primary)]">Enter</kbd>
                         to open
                     </span>
                     <span className="flex items-center gap-1">
-                        <kbd className="px-1.5 py-0.5 bg-[#3c3c3c] rounded">Esc</kbd>
+                        <kbd className="px-1.5 py-0.5 bg-[color:var(--bg-kbd)] rounded text-[color:var(--text-primary)]">Esc</kbd>
                         to close
                     </span>
                 </div>

@@ -32,6 +32,17 @@ export interface FontSettings {
   fontWeight: number;
 }
 
+export type ThemeId = 'default' | 'dracula' | 'one-dark-pro' | 'aura-dark';
+
+export const defaultThemeId: ThemeId = 'default';
+
+export const themeOptions: Array<{ label: string; value: ThemeId }> = [
+  { label: 'Default', value: 'default' },
+  { label: 'Dracula', value: 'dracula' },
+  { label: 'One Dark Pro', value: 'one-dark-pro' },
+  { label: 'Aura Dark', value: 'aura-dark' },
+];
+
 export interface FolderNode {
   id: string;
   name: string;

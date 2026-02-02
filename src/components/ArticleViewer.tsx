@@ -1,16 +1,18 @@
 import { Clock, User, Calendar, FileCode } from 'lucide-react';
 import { getLanguageColor, type FontSettings, type Article } from '../types';
 import MarkdownRenderer from './MarkdownRenderer';
+import type { ThemeId } from '../types';
 
 interface ArticleViewerProps {
     article: Article | undefined;
     fontSettings: FontSettings;
+    theme: ThemeId;
 }
 
-export default function ArticleViewer({ article, fontSettings }: ArticleViewerProps) {
+export default function ArticleViewer({ article, fontSettings, theme }: ArticleViewerProps) {
     if (!article) {
         return (
-            <div className="flex-1 flex items-center justify-center text-[#6e6e6e]">
+            <div className="flex-1 flex items-center justify-center text-[color:var(--text-muted)]">
                 Article not found
             </div>
         );
@@ -25,22 +27,22 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
             }}
         >
             {/* Article Header */}
-            <div className="px-4 md:px-8 py-5 md:py-6 border-b border-[#3e3e42] bg-[#252526]">
+            <div className="px-4 md:px-8 py-5 md:py-6 border-b border-[color:var(--bg-hover)] bg-[color:var(--bg-secondary)]">
                 <div className="flex items-center gap-2 mb-3">
                     <FileCode
                         size={18}
                         style={{ color: getLanguageColor(article.language) }}
                     />
-                    <span className="text-sm text-[#858585]">{article.title}</span>
+                    <span className="text-sm text-[color:var(--text-secondary)]">{article.title}</span>
                 </div>
 
-                <h1 className="text-2xl md:text-3xl font-bold text-[#dcdcaa] mb-4">{article.displayTitle}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-[color:var(--accent-yellow)] mb-4">{article.displayTitle}</h1>
 
                 {article.excerpt && (
-                    <p className="text-[#9cdcfe] text-lg mb-4">{article.excerpt}</p>
+                    <p className="text-[color:var(--accent-cyan)] text-lg mb-4">{article.excerpt}</p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[#858585]">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[color:var(--text-secondary)]">
                     <span className="flex items-center gap-1">
                         <User size={14} /> Rixa
                     </span>
@@ -59,7 +61,7 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
                         {article.tags.map(tag => (
                             <span
                                 key={tag}
-                                className="px-2 py-1 text-xs bg-[#1e1e1e] text-[#9cdcfe] rounded"
+                                className="px-2 py-1 text-xs bg-[color:var(--bg-primary)] text-[color:var(--accent-cyan)] rounded"
                             >
                                 #{tag}
                             </span>
@@ -70,8 +72,8 @@ export default function ArticleViewer({ article, fontSettings }: ArticleViewerPr
 
             {/* Article Content */}
             <div className="px-4 md:px-8 py-6 max-w-4xl mx-auto">
-                {article.content ? <MarkdownRenderer content={article.content} /> : (
-                    <p className="text-[#6e6e6e] italic">Content coming soon...</p>
+                {article.content ? <MarkdownRenderer content={article.content} theme={theme} /> : (
+                    <p className="text-[color:var(--text-muted)] italic">Content coming soon...</p>
                 )}
             </div>
         </div>

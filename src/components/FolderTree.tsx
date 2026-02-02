@@ -48,7 +48,7 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
                     <button
                         type="button"
                         onClick={() => toggleFolder(node.id)}
-                        className="w-full flex items-center gap-1 py-2 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors text-left select-none touch-manipulation"
+                        className="w-full flex items-center gap-1 py-2 text-[color:var(--text-primary)] text-sm cursor-pointer hover:bg-[color:var(--bg-hover)] transition-colors text-left select-none touch-manipulation"
                         style={{ paddingLeft }}
                     >
                         <ChevronRight
@@ -59,7 +59,7 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
                             <span className="font-bold">{node.name}</span>
                         ) : (
                             <>
-                                <Folder size={14} className="text-[#dcb67a]" />
+                                <Folder size={14} className="text-[color:var(--accent-yellow)]" />
                                 <span>{node.name}/</span>
                             </>
                         )}
@@ -82,7 +82,7 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
                 key={node.id}
                 type="button"
                 onClick={() => node.articleId && onFileClick(node.articleId)}
-                className="w-full flex items-center gap-2 py-2 text-[#cccccc] text-sm cursor-pointer hover:bg-[#2a2d2e] transition-colors text-left select-none touch-manipulation"
+                className="w-full flex items-center gap-2 py-2 text-[color:var(--text-primary)] text-sm cursor-pointer hover:bg-[color:var(--bg-hover)] transition-colors text-left select-none touch-manipulation"
                 style={{ paddingLeft: paddingLeft + 14 }}
             >
                 <FileCode size={14} style={{ color: getLanguageColor(language) }} />
@@ -93,7 +93,7 @@ export default function FolderTree({ folderTree, articles, onFileClick }: Folder
 
     if (folderTree.length === 0) {
         return (
-            <div className="flex-1 flex items-center justify-center text-[#6e6e6e] text-sm p-4">
+            <div className="flex-1 flex items-center justify-center text-[color:var(--text-muted)] text-sm p-4">
                 <p className="text-center">
                     No articles found.<br />
                     <span className="text-xs">Add .md files to public/articles/</span>
