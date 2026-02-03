@@ -10,7 +10,7 @@ import {
   Check,
   X
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MarkdownRenderer from './MarkdownRenderer';
 
 interface Article {
@@ -540,15 +540,19 @@ export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarkIds, setBookmarkIds] = useState<number[]>(() => {
+    try {
+      const raw = localStorage.getItem('rixa-bookmarks');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  });
 
   const article = articlesData.find(a => a.id === Number(id));
 
-  useEffect(() => {
-    // Check if bookmarked
-    const bookmarks = JSON.parse(localStorage.getItem('rixa-bookmarks') || '[]');
-    setBookmarked(bookmarks.includes(Number(id)));
-  }, [id]);
+  const bookmarked = bookmarkIds.includes(Number(id));
 
   if (!article) {
     return (
@@ -574,15 +578,14 @@ export default function ArticleDetail() {
   };
 
   const handleBookmark = () => {
-    const bookmarks = JSON.parse(localStorage.getItem('rixa-bookmarks') || '[]');
-    let newBookmarks;
-    if (bookmarked) {
-      newBookmarks = bookmarks.filter((b: number) => b !== article.id);
-    } else {
-      newBookmarks = [...bookmarks, article.id];
-    }
-    localStorage.setItem('rixa-bookmarks', JSON.stringify(newBookmarks));
-    setBookmarked(!bookmarked);
+    setBookmarkIds((prev) => {
+      const isCurrentlyBookmarked = prev.includes(article.id);
+      const next = isCurrentlyBookmarked
+        ? prev.filter((b) => b !== article.id)
+        : [...prev, article.id];
+      localStorage.setItem('rixa-bookmarks', JSON.stringify(next));
+      return next;
+    });
   };
 
   const handleShare = async () => {
@@ -593,7 +596,7 @@ export default function ArticleDetail() {
           text: article.excerpt,
           url: window.location.href,
         });
-      } catch (err) {
+      } catch {
         console.log('Share cancelled');
       }
     } else {

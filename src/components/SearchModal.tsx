@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Fuse from 'fuse.js';
 import { Search, FileCode, X } from 'lucide-react';
 import { getLanguageColor, type Article } from '../types';
@@ -12,14 +12,11 @@ interface SearchModalProps {
 
 export default function SearchModal({ isOpen, articles, onClose, onSelectArticle }: SearchModalProps) {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<Article[]>([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
-    const fuseRef = useRef<Fuse<Article> | null>(null);
 
-    // Initialize/update Fuse.js when articles change
-    useEffect(() => {
-        fuseRef.current = new Fuse(articles, {
+    const fuse = useMemo(() => {
+        return new Fuse(articles, {
             keys: [
                 { name: 'displayTitle', weight: 0.4 },
                 { name: 'title', weight: 0.3 },
@@ -33,12 +30,15 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
         });
     }, [articles]);
 
+    const results = useMemo(() => {
+        const trimmed = query.trim();
+        if (trimmed === '') return articles.slice(0, 8);
+        return fuse.search(trimmed).map(r => r.item).slice(0, 8);
+    }, [articles, fuse, query]);
+
     useEffect(() => {
         if (isOpen && inputRef.current) {
             inputRef.current.focus();
-            setQuery('');
-            setResults(articles.slice(0, 8));
-            setSelectedIndex(0);
         }
     }, [isOpen, articles]);
 
@@ -52,37 +52,42 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
         };
     }, [isOpen]);
 
-    useEffect(() => {
-        if (!fuseRef.current) return;
-
-        if (query.trim() === '') {
-            setResults(articles.slice(0, 8));
-        } else {
-            const searchResults = fuseRef.current.search(query);
-            setResults(searchResults.map(r => r.item).slice(0, 8));
-        }
+    const handleClose = () => {
+        setQuery('');
         setSelectedIndex(0);
-    }, [query, articles]);
+        onClose();
+    };
+
+    const handleChange = (value: string) => {
+        setQuery(value);
+        setSelectedIndex(0);
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
+                if (results.length === 0) return;
                 setSelectedIndex(prev => Math.min(prev + 1, results.length - 1));
                 break;
             case 'ArrowUp':
                 e.preventDefault();
+                if (results.length === 0) return;
                 setSelectedIndex(prev => Math.max(prev - 1, 0));
                 break;
             case 'Enter':
                 e.preventDefault();
-                if (results[selectedIndex]) {
-                    onSelectArticle(results[selectedIndex]);
-                    onClose();
+                if (results.length === 0) return;
+                {
+                    const activeIndex = Math.min(selectedIndex, results.length - 1);
+                    const active = results[activeIndex];
+                    if (!active) return;
+                    onSelectArticle(active);
+                    handleClose();
                 }
                 break;
             case 'Escape':
-                onClose();
+                handleClose();
                 break;
         }
     };
@@ -92,7 +97,7 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
     return (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-4 md:pt-[15vh] px-3">
             {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50" onPointerDown={onClose} />
+            <div className="absolute inset-0 bg-black/50" onPointerDown={handleClose} />
 
             {/* Modal */}
             <div
@@ -106,13 +111,13 @@ export default function SearchModal({ isOpen, articles, onClose, onSelectArticle
                         ref={inputRef}
                         type="text"
                         value={query}
-                        onChange={e => setQuery(e.target.value)}
+                        onChange={e => handleChange(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Search articles..."
                         className="flex-1 bg-transparent text-[color:var(--text-primary)] text-base md:text-sm outline-none placeholder-[color:var(--text-muted)]"
                     />
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="text-[color:var(--text-secondary)] hover:text-[color:var(--text-primary)] transition-colors"
                     >
                         <X size={16} />

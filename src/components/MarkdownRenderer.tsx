@@ -208,18 +208,25 @@ function MarkdownCodeBlock({ code, language, theme }: { code: string; language?:
   const [copied, setCopied] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 
+  const lang = useMemo(() => normalizeFenceLanguage(language), [language]);
+  const cacheKey = useMemo(() => `${theme}:${lang}\n${code}`, [code, lang, theme]);
+
   useEffect(() => {
     let cancelled = false;
 
-    const lang = normalizeFenceLanguage(language);
-    const cacheKey = `${theme}:${lang}\n${code}`;
     const cached = shikiHtmlCache.get(cacheKey);
     if (cached) {
-      setHighlightedHtml(cached);
+      queueMicrotask(() => {
+        if (!cancelled) setHighlightedHtml(cached);
+      });
       return () => {
         cancelled = true;
       };
     }
+
+    queueMicrotask(() => {
+      if (!cancelled) setHighlightedHtml(null);
+    });
 
     getShikiHighlighter()
       .then(highlighter => {
@@ -241,7 +248,7 @@ function MarkdownCodeBlock({ code, language, theme }: { code: string; language?:
     return () => {
       cancelled = true;
     };
-  }, [code, language, theme]);
+  }, [cacheKey, code, lang, theme]);
 
   const onCopy = async () => {
     const ok = await copyToClipboard(code);
@@ -253,7 +260,7 @@ function MarkdownCodeBlock({ code, language, theme }: { code: string; language?:
   return (
     <div className="my-4 rounded-lg overflow-hidden bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)]">
       <div className="flex items-center justify-between px-4 py-2 bg-[color:var(--bg-tertiary)] border-b border-[color:var(--bg-hover)]">
-        <span className="text-xs text-[color:var(--text-secondary)]">{normalizeFenceLanguage(language) || 'text'}</span>
+        <span className="text-xs text-[color:var(--text-secondary)]">{lang || 'text'}</span>
         <button
           type="button"
           onClick={onCopy}
