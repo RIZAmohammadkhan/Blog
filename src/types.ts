@@ -55,16 +55,19 @@ export interface FolderNode {
 // Language colors for file icons
 export const getLanguageColor = (lang: string): string => {
   const colors: Record<string, string> = {
-    markdown: "#6a9955",
-    rust: "#dea584",
-    typescript: "#569cd6",
-    go: "#4ec9b0",
-    bash: "#ce9178",
-    powershell: "#569cd6",
-    zsh: "#89e051",
-    json: "#dcdcaa",
-    javascript: "#f1e05a",
-    python: "#3572A5"
+    // Theme-aware defaults
+    markdown: 'var(--accent-green)',
+    typescript: 'var(--accent-blue)',
+    javascript: 'var(--accent-yellow)',
+    go: 'var(--accent-cyan)',
+    bash: 'var(--accent-orange)',
+    zsh: 'var(--accent-green)',
+    json: 'var(--accent-yellow)',
+    powershell: 'var(--accent-blue)',
+    rust: 'var(--accent-orange)',
+
+    // If something isn't covered by theme variables, fall back to a readable neutral.
+    python: '#3572A5'
   };
   return colors[lang] || "#d4d4d4";
 };

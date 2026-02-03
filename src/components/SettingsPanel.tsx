@@ -203,7 +203,7 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSettingsCha
 
             {/* Panel */}
             <div
-                className="relative w-full max-w-md bg-[color:var(--bg-secondary)] rounded-lg border border-[color:var(--bg-hover)] shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)] md:max-h-[90dvh]"
+                className="relative w-full max-w-2xl bg-[color:var(--bg-secondary)] rounded-lg border border-[color:var(--bg-hover)] shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)] md:max-h-[90dvh]"
                 onPointerDown={e => e.stopPropagation()}
             >
                 {/* Header */}
@@ -223,105 +223,109 @@ export default function SettingsPanel({ isOpen, onClose, settings, onSettingsCha
                 </div>
 
                 {/* Content */}
-                <div className="p-4 md:p-6 space-y-6 overflow-y-auto">
-                    {/* Theme */}
-                    <div>
-                        <label className="block text-sm text-[color:var(--text-primary)] mb-2">
-                            Theme
-                        </label>
-                        <select
-                            value={localTheme}
-                            onChange={e => {
-                                const nextTheme = e.target.value as ThemeId;
-                                setLocalTheme(nextTheme);
-                                onThemeChange(nextTheme);
-                            }}
-                            className="w-full px-3 py-2 bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)] rounded text-sm text-[color:var(--text-primary)] outline-none focus:border-[color:var(--accent-blue)] transition-colors"
-                        >
-                            {themeOptions.map(option => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="p-4 md:p-5 grid gap-4 md:grid-cols-2 md:gap-5 md:items-start">
+                    <div className="space-y-4">
+                        {/* Theme */}
+                        <div>
+                            <label className="block text-sm text-[color:var(--text-primary)] mb-2">
+                                Theme
+                            </label>
+                            <select
+                                value={localTheme}
+                                onChange={e => {
+                                    const nextTheme = e.target.value as ThemeId;
+                                    setLocalTheme(nextTheme);
+                                    onThemeChange(nextTheme);
+                                }}
+                                className="w-full px-3 py-2 bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)] rounded text-sm text-[color:var(--text-primary)] outline-none focus:border-[color:var(--accent-blue)] transition-colors"
+                            >
+                                {themeOptions.map(option => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                    {/* Font Family */}
-                    <div>
-                        <label className="block text-sm text-[color:var(--text-primary)] mb-2">
-                            Font Family
-                        </label>
-                        <select
-                            value={localSettings.fontFamily}
-                            onChange={e => handleFontFamilyChange(e.target.value)}
-                            className="w-full px-3 py-2 bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)] rounded text-sm text-[color:var(--text-primary)] outline-none focus:border-[color:var(--accent-blue)] transition-colors"
-                        >
-                            {fontFamilyOptions.map(option => (
-                                <option key={option.label} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                        {/* Font Family */}
+                        <div>
+                            <label className="block text-sm text-[color:var(--text-primary)] mb-2">
+                                Font Family
+                            </label>
+                            <select
+                                value={localSettings.fontFamily}
+                                onChange={e => handleFontFamilyChange(e.target.value)}
+                                className="w-full px-3 py-2 bg-[color:var(--bg-primary)] border border-[color:var(--bg-hover)] rounded text-sm text-[color:var(--text-primary)] outline-none focus:border-[color:var(--accent-blue)] transition-colors"
+                            >
+                                {fontFamilyOptions.map(option => (
+                                    <option key={option.label} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                    {/* Font Weight */}
-                    <div>
-                        <label className="block text-sm text-[color:var(--text-primary)] mb-2">
-                            Font Weight: <span className="text-[color:var(--accent-blue)]">{localSettings.fontWeight}</span>
-                        </label>
-                        <input
-                            type="range"
-                            min="300"
-                            max="700"
-                            step="100"
-                            value={localSettings.fontWeight}
-                            onChange={e => handleFontWeightChange(Number(e.target.value))}
-                            className="w-full h-2 bg-[color:var(--bg-primary)] rounded-lg appearance-none cursor-pointer accent-[color:var(--accent-blue)]"
-                        />
-                        <div className="flex justify-between text-xs text-[color:var(--text-muted)] mt-1">
-                            <span>Light</span>
-                            <span>Normal</span>
-                            <span>Bold</span>
+                        {/* Font Weight */}
+                        <div>
+                            <label className="block text-sm text-[color:var(--text-primary)] mb-2">
+                                Font Weight: <span className="text-[color:var(--accent-blue)]">{localSettings.fontWeight}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="300"
+                                max="700"
+                                step="100"
+                                value={localSettings.fontWeight}
+                                onChange={e => handleFontWeightChange(Number(e.target.value))}
+                                className="w-full h-2 bg-[color:var(--bg-primary)] rounded-lg appearance-none cursor-pointer accent-[color:var(--accent-blue)]"
+                            />
+                            <div className="flex justify-between text-xs text-[color:var(--text-muted)] mt-1">
+                                <span>Light</span>
+                                <span>Normal</span>
+                                <span>Bold</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Preview */}
-                    <div className="p-4 bg-[color:var(--bg-primary)] rounded border border-[color:var(--bg-hover)]">
-                        <p className="text-xs text-[color:var(--text-muted)] mb-2">Preview:</p>
-                        <p
-                            className="text-[color:var(--text-primary)]"
-                            style={{
-                                fontFamily: localSettings.fontFamily,
-                                fontWeight: localSettings.fontWeight
-                            }}
-                        >
-                            The quick brown fox jumps over the lazy dog.
-                        </p>
-                        <p
-                            className="text-sm text-[color:var(--accent-cyan)] mt-2"
-                            style={{
-                                fontFamily: localSettings.fontFamily,
-                                fontWeight: localSettings.fontWeight
-                            }}
-                        >
-              // Code comment style preview
-                        </p>
-                    </div>
+                    <div className="space-y-4">
+                        {/* Preview */}
+                        <div className="p-3 bg-[color:var(--bg-primary)] rounded border border-[color:var(--bg-hover)]">
+                            <p className="text-xs text-[color:var(--text-muted)] mb-2">Preview</p>
+                            <p
+                                className="text-[color:var(--text-primary)]"
+                                style={{
+                                    fontFamily: localSettings.fontFamily,
+                                    fontWeight: localSettings.fontWeight
+                                }}
+                            >
+                                The quick brown fox jumps over the lazy dog.
+                            </p>
+                            <p
+                                className="text-sm text-[color:var(--accent-cyan)] mt-2"
+                                style={{
+                                    fontFamily: localSettings.fontFamily,
+                                    fontWeight: localSettings.fontWeight
+                                }}
+                            >
+                                // Code comment style preview
+                            </p>
+                        </div>
 
-                    {/* Actions */}
-                    <div className="flex justify-between pt-4 border-t border-[color:var(--bg-hover)]">
-                        <button
-                            onClick={handleReset}
-                            className="px-4 py-2 text-sm text-[color:var(--text-primary)] hover:bg-[color:var(--bg-hover)] rounded transition-colors"
-                        >
-                            Reset to Defaults
-                        </button>
-                        <button
-                            onClick={onClose}
-                            className="px-4 py-2 text-sm text-[color:var(--text-on-accent)] bg-[color:var(--accent-blue)] hover:bg-[color:var(--accent-blue-hover)] rounded transition-colors"
-                        >
-                            Done
-                        </button>
+                        {/* Actions */}
+                        <div className="flex items-center justify-between gap-3 pt-3 border-t border-[color:var(--bg-hover)]">
+                            <button
+                                onClick={handleReset}
+                                className="px-3 py-2 text-sm text-[color:var(--text-primary)] hover:bg-[color:var(--bg-hover)] rounded transition-colors"
+                            >
+                                Reset to Defaults
+                            </button>
+                            <button
+                                onClick={onClose}
+                                className="px-4 py-2 text-sm text-[color:var(--text-on-accent)] bg-[color:var(--accent-blue)] hover:bg-[color:var(--accent-blue-hover)] rounded transition-colors"
+                            >
+                                Done
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
